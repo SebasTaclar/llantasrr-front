@@ -1,7 +1,12 @@
 <template>
   <section class="showcase-section">
     <div class="container">
-      <h2 class="showcase-title">Novedades</h2>
+      <h2 class="showcase-title">NOVEDADES</h2>
+
+      <div class="showcase-banner" aria-hidden>
+        <img src="/images/llantas rr 1.jpg" alt="Banner promociones" />
+      </div>
+
       <p class="showcase-subtitle">Descubre nuestros productos más recientes</p>
 
       <!-- Sección: Tecnología -->
@@ -165,7 +170,7 @@ const showProductDetail = (product: {
 </script>
 
 <style scoped>
-/* Variables de tema SOYDANI */
+/* Variables de tema - CASA COMERCIAL DE LA LLANTA RR */
 :root {
   --primary-red: #DC2626;
   --black: #000000;
@@ -186,40 +191,28 @@ const showProductDetail = (product: {
 /* Contenedor principal - ESTILO OSCURO */
 .showcase-section {
   width: 100%;
-  background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
-  padding: 5rem 0;
+  background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+  padding: 3rem 0;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
 }
 
-.showcase-section::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 50% 0%, rgba(220, 38, 38, 0.15) 0%, transparent 60%);
-  pointer-events: none;
-}
+.showcase-section::before { display: none; }
 
 .container {
   max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 2rem;
   position: relative;
   z-index: 1;
 }
 
 /* Títulos */
 .showcase-title {
-  font-size: 3rem;
+  font-size: 35px;
   font-weight: 800;
   text-align: center;
   margin-bottom: 0.5rem;
-  color: var(--white);
+  color: #FFFFFF;
   letter-spacing: -0.02em;
-  animation: fadeIn 0.8s ease-out;
 }
 
 .showcase-subtitle {
@@ -229,6 +222,9 @@ const showProductDetail = (product: {
   margin-bottom: 4rem;
   animation: fadeIn 1s ease-out;
 }
+
+.showcase-banner { display:flex; justify-content:center;  }
+.showcase-banner img { width:100%; max-width:1400px; height:300px; border-radius:8px; box-shadow: 0 12px 30px rgba(2,6,23,0.35); display:block }
 
 /* Sección de categoría */
 .category-section {
@@ -256,21 +252,16 @@ const showProductDetail = (product: {
 
 /* Tarjeta de producto */
 .product-card {
-  background: rgba(30, 30, 30, 0.8);
-  border-radius: 16px;
+  background: var(--card-bg);
+  border-radius: 12px;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
+  transition: none;
+  border: 1px solid var(--border-color);
+  backdrop-filter: none;
 }
 
-.product-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(220, 38, 38, 0.3),
-              0 0 0 1px rgba(220, 38, 38, 0.5);
-  border-color: var(--primary-red);
-}
+.product-card:hover { transform: none; box-shadow: none; border-color: var(--border-color); }
 
 .product-image-wrapper {
   width: 100%;

@@ -1,7 +1,7 @@
 /* ========================================
-   ESTILOS MODERNOS E-COMMERCE SOYDANI
-   Inspirado en La Plaza Morada y TrueShop
-   ======================================== */
+  ESTILOS MODERNOS E-COMMERCE - LLANTAS RR
+  Estilos adaptados para una tienda de llantas
+  ======================================== */
 
 /* === GRID DE PRODUCTOS MODERNO === */
 .modern-products-grid {
@@ -40,9 +40,9 @@
 }
 
 .product-card-premium:hover {
-  transform: translateY(-12px);
-  box-shadow: 0 20px 48px rgba(220, 38, 38, 0.2), 0 8px 24px rgba(0, 0, 0, 0.12);
-  border-color: var(--primary-red);
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border-color);
 }
 
 .product-card-premium::before {
@@ -54,12 +54,10 @@
   height: 4px;
   background: linear-gradient(90deg, var(--primary-red) 0%, var(--secondary-red) 100%);
   opacity: 0;
-  transition: opacity var(--transition-normal);
+  transition: none;
 }
 
-.product-card-premium:hover::before {
-  opacity: 1;
-}
+.product-card-premium:hover::before { opacity: 0.6; }
 
 /* === PRODUCT IMAGE CONTAINER === */
 .product-image-container {
@@ -74,12 +72,10 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform var(--transition-slow);
+  transition: none;
 }
 
-.product-card-premium:hover .product-image-container img {
-  transform: scale(1.12);
-}
+.product-card-premium:hover .product-image-container img { transform: none; }
 
 /* === BADGES Y ETIQUETAS === */
 .product-badges {
@@ -101,8 +97,8 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
-  animation: pulse-badge 2s ease-in-out infinite;
+  box-shadow: none;
+  animation: none;
 }
 
 @keyframes pulse-badge {
@@ -145,15 +141,10 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  opacity: 0;
-  transform: translateX(10px);
-  transition: all var(--transition-normal);
-  z-index: 2;
-}
-
-.product-card-premium:hover .product-quick-actions {
   opacity: 1;
-  transform: translateX(0);
+  transform: none;
+  transition: none;
+  z-index: 2;
 }
 
 .quick-action-btn {
@@ -173,8 +164,8 @@
 .quick-action-btn:hover {
   background: var(--primary-red);
   color: var(--white);
-  transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
+  transform: none;
+  box-shadow: none;
 }
 
 /* === PRODUCT INFO === */
@@ -296,8 +287,8 @@
 
 .btn-add-to-cart:hover {
   background: var(--dark-red);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.4);
+  transform: none;
+  box-shadow: none;
 }
 
 .btn-add-to-cart:active {
@@ -318,7 +309,7 @@
 
 .btn-quick-view:hover {
   background: #1a1a1a;
-  transform: translateY(-2px);
+  transform: none;
 }
 
 /* === FILTERS Y SORTING === */
@@ -374,9 +365,9 @@
 .category-banner {
   position: relative;
   height: 400px;
-  background: linear-gradient(135deg, var(--black) 0%, #1a1a1a 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
   border-radius: var(--border-radius-xl);
-  overflow: hidden;
+  overflow: visible;
   margin-bottom: 3rem;
   display: flex;
   align-items: center;
@@ -384,15 +375,7 @@
   padding: 3rem;
 }
 
-.category-banner::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at 70% 30%, rgba(220, 38, 38, 0.2) 0%, transparent 70%);
-}
+.category-banner::before { display: none; }
 
 .category-banner-content {
   position: relative;

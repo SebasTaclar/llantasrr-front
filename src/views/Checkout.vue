@@ -237,12 +237,11 @@
               <div v-if="deliveryMethod === 'pickup'" class="pickup-info">
                 <div class="info-card">
                   <h3>📍 Nuestra Ubicación</h3>
-                  <p class="location-name"><strong>Centro comercial Unilago, Bogotá - Loc. 1-124</strong></p>
-                  <p class="location-address">Cra. 15 # 78 - 33, Bogotá D.C.</p>
+                  <p class="location-address">Cl. 60g Sur #18b - 6 Bogotá D.C.</p>
 
                   <h4>⏰ Horarios de Atención</h4>
                   <p>Lunes - Sábado: 9:30 AM - 7:00 PM</p>
-                  <p>Domingos: Cada 15 Días</p>
+                  <p>Domingos: Cerrado</p>
                 </div>
               </div>
             </transition>

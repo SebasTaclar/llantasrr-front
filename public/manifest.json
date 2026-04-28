@@ -1,7 +1,7 @@
 {
-  "name": "SOYDANI",
-  "short_name": "SOYDANI",
-  "description": "Tu tienda de confianza para tecnología, decoración navideña y artículos del hogar. Calidad y atención personalizada.",
+  "name": "CASA COMERCIAL DE LA LLANTA RR",
+  "short_name": "LLANTA RR",
+  "description": "Llantas para moto y carro. Calidad, garantía y asesoría especializada en Colombia.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#000000",
@@ -60,7 +60,7 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["shopping", "technology", "lifestyle", "home", "seasonal"],
+  "categories": ["shopping", "automotive", "sporting_goods"],
   "screenshots": [
     {
       "src": "/images/screenshot-1.jpg",
@@ -70,10 +70,10 @@
   ],
   "shortcuts": [
     {
-      "name": "Tecnología",
-      "short_name": "Tech",
-      "description": "Ver productos de tecnología",
-      "url": "/iphone",
+      "name": "Llantas Moto",
+      "short_name": "Moto",
+      "description": "Ver llantas para moto",
+      "url": "/moto",
       "icons": [
         {
           "src": "/icons/icon-96x96.png",
@@ -82,10 +82,10 @@
       ]
     },
     {
-      "name": "Navidad",
-      "short_name": "Navidad",
-      "description": "Ver decoración navideña",
-      "url": "/mac",
+      "name": "Llantas Carro",
+      "short_name": "Carro",
+      "description": "Ver llantas para carro",
+      "url": "/carro",
       "icons": [
         {
           "src": "/icons/icon-96x96.png",
@@ -94,10 +94,10 @@
       ]
     },
     {
-      "name": "Hogar",
-      "short_name": "Hogar",
-      "description": "Ver artículos del hogar",
-      "url": "/ipad",
+      "name": "Promociones",
+      "short_name": "Ofertas",
+      "description": "Ver promociones y ofertas",
+      "url": "/promociones",
       "icons": [
         {
           "src": "/icons/icon-96x96.png",

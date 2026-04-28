@@ -95,7 +95,7 @@ const clearCustomValidityMessage = (event: Event) => {
   align-items: center;
   min-height: 100vh;
   width: 100%;
-  padding: 2rem;
+  padding: 8rem;
   background: var(--bg-gradient-primary);
   position: relative;
   transition: all 0.3s ease;

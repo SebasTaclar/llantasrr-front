@@ -1,9 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import './styles/global.css';
 @import './styles/modern-ecommerce.css';
+@import './styles/day-mode-overrides.css';
+
+/* Material Symbols baseline (global) */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-size: 18px;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Icon sizing helper */
+.icon-lock, .icon-phone, .icon-whatsapp, .icon-cart {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 
 :root {
-  /* SOYDANI Brand Colors - Rojo, Negro, Blanco */
+  /* LLANTA RR Brand Colors - Rojo, Negro, Blanco */
   --primary-red: #DC2626;        /* Rojo principal */
   --secondary-red: #EF4444;      /* Rojo claro */
   --tertiary-red: #B91C1C;       /* Rojo medio */
@@ -41,18 +60,17 @@
   --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Dark Theme Variables (Default) */
+/* Day Theme Variables (Default) */
 :root {
-  /* Default theme - Dark */
-  --bg-color: #000000;
-  --text-color: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.9);
-  --border-color: rgba(220, 38, 38, 0.3);
-  --card-bg: rgba(20, 20, 20, 0.9);
-  --card-hover-bg: rgba(255, 255, 255, 0.15);
+  /* Default theme - Light */
+  --bg-color: #ffffff;
+  --text-color: #031633;
+  --text-secondary: #6c757d;
+  --border-color: #e0e6ed;
+  --card-bg: #ffffff;
+  --card-hover-bg: #e9ecef;
 }
 
-:root,
 :root[data-theme='dark'] {
   --bg-primary: #000000;
   --bg-secondary: rgba(255, 255, 255, 0.05);
@@ -288,4 +306,40 @@ textarea::placeholder {
   --transition-fast: 0.15s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
+}
+
+/* ===== Mobile layout helpers =====
+   Reserve espacio para navbar fija y ajustes generales en pantallas pequeñas */
+:root {
+  --navbar-height: 140px; /* altura reservada por defecto (escritorio) */
+}
+
+@media (max-width: 900px) {
+  :root { --navbar-height: 76px; }
+}
+
+
+
+/* Ajustes para botones y logo en móvil */
+@media (max-width: 768px) {
+  .site-logo { height: 48px; }
+  .btn-primary, .btn-secondary { width: 100%; padding: 12px 16px; font-size: 1rem; }
+  .btn { padding: 10px 12px; }
+  .cart-count { font-size: 11px; padding: 4px 8px; }
+}
+
+/* Forzar modales a ocupar pantalla en móvil (fallback global) */
+@media (max-width: 768px) {
+  .modal-overlay .modal-content,
+  .modal-overlay .modal-body,
+  .cart-modal,
+  .modal-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    max-height: none !important;
+    border-radius: 0 !important;
+    padding: 1rem !important;
+    overflow-y: auto !important;
+  }
 }

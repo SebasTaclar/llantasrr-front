@@ -93,86 +93,19 @@
             </div>
           </div>
         </div>
-      </div>      <!-- Botón del carrito flotante -->
-      <div v-if="totalItems > 0" class="floating-cart" @click="toggleCart">
-        <div class="cart-icon">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="m5 7 1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12"/>
-            <path d="M22 7H2"/>
-            <path d="m9 3 2-2 2 2"/>
-          </svg>
-          <span class="cart-badge">{{ totalItems }}</span>
-        </div>
-        <div class="cart-tooltip">Ver carrito de compras</div>
-      </div>
-    </div>
-
-    <!-- Modal del carrito -->
-    <div v-if="isCartOpen" class="cart-overlay" @click="closeCart">
-      <div class="cart-modal" @click.stop>
-        <div class="cart-header">
-          <h3>Tu Carrito</h3>
-          <button @click="closeCart" class="close-btn">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="m18 6-12 12"/>
-              <path d="m6 6 12 12"/>
-            </svg>
-          </button>
-        </div>
-
-        <div class="cart-content">
-          <div v-if="cartItems.length === 0" class="empty-cart">
-            <p>Tu carrito está vacío</p>
+      <!-- Botón del carrito flotante -->
+        <div v-if="totalItems > 0" class="floating-cart" @click="toggleCart">
+          <div class="cart-icon">
+            <span class="material-symbols-outlined icon-cart">shopping_cart</span>
+            <span class="cart-badge">{{ totalItems }}</span>
           </div>
-
-          <div v-else class="cart-items">
-            <div
-              v-for="item in cartItems"
-              :key="item.id"
-              class="cart-item"
-            >
-              <img :src="item.image" :alt="item.name" />
-              <div class="item-details">
-                <h4>{{ item.name }}</h4>
-                <span class="item-category">{{ item.category }}</span>
-                <span v-if="item.selectedColor" class="item-color">Color: {{ item.selectedColor }}</span>
-                <div class="item-price">${{ item.price.toLocaleString() }}</div>
-              </div>
-              <div class="item-controls">
-                <div class="quantity-controls">
-                  <button @click="updateQuantity(item.id, item.quantity - 1, item.selectedColor)" class="quantity-btn minus">-</button>
-                  <span>{{ item.quantity }}</span>
-                  <button @click="updateQuantity(item.id, item.quantity + 1, item.selectedColor)" class="quantity-btn plus">+</button>
-                </div>
-                <button @click="removeFromCart(item.id, item.selectedColor)" class="remove-btn">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 6h18"/>
-                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
-                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="cartItems.length > 0" class="cart-footer">
-          <div class="cart-total-display">
-            <strong>Total: ${{ totalPrice.toLocaleString() }}</strong>
-          </div>
-          <div class="cart-actions">
-            <button @click="clearCart" class="btn-clear">
-              Limpiar carrito
-            </button>
-            <button @click="goToCheckout" class="btn-checkout">
-              Finalizar Pedido
-            </button>
-          </div>
+          <div class="cart-tooltip">Ver carrito de compras</div>
         </div>
       </div>
-    </div>
 
-    <!-- Modal del producto -->
+      <!-- Usamos el modal global `CartModal.vue` incluido en App.vue -->
+
+      <!-- Modal del producto -->
     <div v-if="showModal" class="modal-overlay" @click="closeModal">
       <div class="modal-content" @click.stop>
         <button class="modal-close floating" @click="closeModal">
@@ -254,6 +187,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
   </section>
 </template>
@@ -608,12 +542,13 @@
 }
 </style><script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useCart } from '@/composables/useCart'
 import { useProducts, type Product as ProductType } from '@/composables/useProducts'
 
 // Router
 const router = useRouter()
+const route = useRoute()
 
 // Usar el composable del carrito
 const {
@@ -638,29 +573,88 @@ const {
   loadCategories
 } = useProducts()
 
+// Estado local (declarado antes de hooks que lo usan)
+const selectedCategory = ref('Todos')
+// Término de búsqueda libre
+const searchTerm = ref('')
+
 // Cargar productos y categorías al montar el componente
 onMounted(async () => {
   console.log('🏪 [ProductStore] onMounted - Iniciando carga...')
   console.log('🏪 [ProductStore] availableProducts ANTES de cargar:', availableProducts.value.length)
 
-  await loadCategories()
-  console.log('🏪 [ProductStore] Categorías cargadas:', categories.value.length)
+  try {
+    await loadCategories()
+    console.log('🏪 [ProductStore] Categorías cargadas:', categories.value.length)
 
-  await loadProducts()
-  console.log('🏪 [ProductStore] loadProducts ejecutado')
-  console.log('🏪 [ProductStore] availableProducts DESPUÉS de cargar:', availableProducts.value.length)
-  console.log('🏪 [ProductStore] availableProducts:', availableProducts.value)
+    await loadProducts()
+    console.log('🏪 [ProductStore] loadProducts ejecutado')
+    console.log('🏪 [ProductStore] availableProducts DESPUÉS de cargar:', availableProducts.value.length)
+    console.log('🏪 [ProductStore] availableProducts:', availableProducts.value)
+  } catch (err) {
+    console.error('[ProductStore] Error al cargar categorías/productos:', err)
+  }
+
+  // Si la ruta contiene query params de búsqueda, inicializar filtros
+  try {
+    const q = route.query
+    // Priorizar parámetro `q` (búsqueda libre). Si existe, usarlo tal cual.
+    if (q.q) {
+      searchTerm.value = String(q.q)
+    } else {
+      const parts: string[] = []
+      if (q.brand) parts.push(String(q.brand))
+      if (q.model) parts.push(String(q.model))
+      if (q.size) parts.push(String(q.size))
+      if (parts.length) searchTerm.value = parts.join(' ')
+    }
+
+    if (q.vehicle) {
+      const v = String(q.vehicle).toLowerCase()
+      if (v === 'moto') selectedCategory.value = 'Moto'
+      if (v === 'carro') selectedCategory.value = 'Carro'
+    }
+    if (q.category) {
+      selectedCategory.value = String(q.category)
+    }
+  } catch (e) {
+    console.warn('[ProductStore] no fue posible inicializar filtros desde route.query', e)
+  }
 })
+
+// Observar cambios en la query de la ruta para actualizar filtros dinámicamente
+watch(
+  () => route.query,
+  (q) => {
+      // Si viene un `q` simple, usarlo directamente
+      if (q.q) {
+        searchTerm.value = String(q.q)
+      } else {
+        const parts: string[] = []
+        if (q.brand) parts.push(String(q.brand))
+        if (q.model) parts.push(String(q.model))
+        if (q.size) parts.push(String(q.size))
+        searchTerm.value = parts.join(' ')
+
+        if (q.vehicle) {
+          const v = String(q.vehicle).toLowerCase()
+          if (v === 'moto') selectedCategory.value = 'Moto'
+          else if (v === 'carro') selectedCategory.value = 'Carro'
+          else selectedCategory.value = 'Todos'
+        }
+
+        if (q.category) {
+          selectedCategory.value = String(q.category)
+        }
+      }
+  },
+  { immediate: true }
+)
 
 // Watcher para debug: observar cambios en productos
 watch(availableProducts, (newProducts) => {
   console.log('🔔 [ProductStore Watch] availableProducts cambiaron:', newProducts.length, newProducts)
 }, { immediate: true })
-
-// Estado local
-const selectedCategory = ref('Todos')
-// Término de búsqueda libre
-const searchTerm = ref('')
 
 // Estado para el modal
 const showModal = ref(false)

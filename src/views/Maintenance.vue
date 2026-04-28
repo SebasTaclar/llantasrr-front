@@ -69,8 +69,8 @@
           <div class="contact-icon">📞</div>
           <div class="contact-content">
             <div class="contact-label">¿Necesitas ayuda urgente?</div>
-            <a href="tel:+573118715539" class="contact-link">
-              Tel: +57 311 871 5539
+            <a href="tel:+573138936332" class="contact-link">
+              Tel: +57 3138936332
             </a>
           </div>
         </div>
@@ -79,7 +79,7 @@
       <!-- WhatsApp contacto -->
       <div class="whatsapp-contact">
         <div class="whatsapp-title">O escribenos directo al Whatsapp</div>
-        <a href="https://wa.me/573118715539?text=Hola,%20necesito%20ayuda%20urgente%20con%20el%20sitio"
+        <a href="https://wa.me/573138936332?text=Hola,%20necesito%20ayuda%20urgente%20con%20el%20sitio"
            class="whatsapp-btn"
            target="_blank"
            rel="noopener noreferrer">
@@ -90,7 +90,7 @@
           </div>
           <div class="whatsapp-content">
             <span class="whatsapp-text">WhatsApp</span>
-            <span class="whatsapp-number">+57 311 871 5539</span>
+            <span class="whatsapp-number">+57 3138936332</span>
           </div>
         </a>
       </div>
@@ -189,7 +189,7 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4rem 2rem 2rem 2rem; /* Más padding arriba */
+  padding: calc(var(--navbar-height) + 16px) 2rem 2rem 2rem; /* Reservar espacio para navbar fija */
   position: relative;
   overflow: hidden;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
