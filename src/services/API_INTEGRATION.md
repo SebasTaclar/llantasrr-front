@@ -11,7 +11,7 @@ La aplicación ahora incluye una arquitectura organizada para la comunicación c
 - **Configuración base** para todas las llamadas a la API
 - **Cliente HTTP** reutilizable con manejo automático de tokens
 - **Tipos de respuesta** estándar de la API
-- **URL base**: `https://soydanirodriguezz-back-efdec0a3crfpdkcz.centralus-01.azurewebsites.net/api/v1`
+- **URL base**: `https://api.llantasrr.example.com/api/v1` (actualizar según entorno real)
 
 #### `authService.ts`
 

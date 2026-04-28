@@ -11,20 +11,37 @@
     </div>
 
     <section class="section">
-      <MainBanner @showRules="openRulesModal" />
+      <LlantasHero />
     </section>
+
+    <section class="section">
+      <BrandsCarousel />
+    </section>
+
+    <section class="section">
+      <CategorySection />
+    </section>
+
     <section class="section">
       <ProductShowcase />
     </section>
 
+
     <section class="section">
-      <ProductStore />
+      <PromotionsRR />
     </section>
 
     <section class="section">
+      <QueTapsoImage />
+    </section>
+
+    <!-- ProductStore removed as requested -->
+
+
+
+    <section class="section offset">
       <ContactSection />
     </section>
-
 
     <section class="section offset">
       <Footer_ />
@@ -41,12 +58,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, defineAsyncComponent } from 'vue'
-import MainBanner from '@/components/MainBanner.vue';
+import { ref, defineAsyncComponent, onMounted, onUnmounted } from 'vue'
+import LlantasHero from '@/components/LlantasHero.vue'
+import BrandsCarousel from '@/components/BrandsCarousel.vue'
+import CategorySection from '@/components/CategorySection.vue'
+import PromotionsRR from '@/components/PromotionsRR.vue'
+import QueTapsoImage from '@/components/QueTapsoImage.vue'
 
 // Carga diferida (code splitting) de secciones pesadas
 const ProductShowcase = defineAsyncComponent(() => import('@/components/ProductShowcase.vue'))
-const ProductStore = defineAsyncComponent(() => import('@/components/ProductStore.vue'))
 const ContactSection = defineAsyncComponent(() => import('@/components/ContactSection.vue'))
 const Footer_ = defineAsyncComponent(() => import('@/components/Footer_.vue'))
 

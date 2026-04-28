@@ -1,63 +1,101 @@
 <template>
   <header>
     <nav class="navbar">
-      <!-- Logo y marca -->
-      <RouterLink class="link-navbar home" to="/" @click="closeMobileMenu">
-        <div class="brand-container">
-          <div class="creative-logo">
-            <div class="logo-circle">
-              <span class="logo-letter">S</span>
-              <span class="logo-letter">D</span>
-            </div>
-            <div class="logo-glow"></div>
-          </div>
-          <div class="brand-info">
-            <div class="brand-title"><span class="highlight">SOYDANI</span></div>
-            <div class="brand-tagline">Tu tienda virtual</div>
+      <!-- Barra superior: logo, contacto, búsqueda y acciones -->
+      <div class="navbar-top">
+        <div class="top-left">
+          <RouterLink class="link-navbar home" to="/" @click="goHome">
+            <img src="/images/logo.jpeg" alt="LLANTAS RR" class="site-logo" />
+          </RouterLink>
+
+          <div class="contact-inline">
+            <a class="phone-link" href="tel:3138936332" aria-label="Llamar 313 893 6332">
+              <span class="material-symbols-outlined icon-phone">call</span>
+              <span>+57 3138936332</span>
+            </a>
+
+            <a class="whatsapp-cta" href="#" @click.prevent="openWhatsapp" aria-label="Abrir WhatsApp">
+              <img src="https://cdn.simpleicons.org/whatsapp/ffffff" alt="WhatsApp" class="icon-whatsapp" />
+              <span>WHATSAPP</span>
+            </a>
           </div>
         </div>
-      </RouterLink>
 
-      <!-- Navegación principal -->
-      <div class="nav-menu desktop-nav">
-        <RouterLink to="/iphone" class="nav-link" :class="{ active: isCurrentRoute('/iphone') }" @click="closeMobileMenu">Tecnología</RouterLink>
-        <RouterLink to="/mac" class="nav-link" :class="{ active: isCurrentRoute('/mac') }" @click="closeMobileMenu">Navidad</RouterLink>
-        <RouterLink to="/ipad" class="nav-link" :class="{ active: isCurrentRoute('/ipad') }" @click="closeMobileMenu">Hogar</RouterLink>
-        <RouterLink to="/watch" class="nav-link" :class="{ active: isCurrentRoute('/watch') }" @click="closeMobileMenu">Ofertas</RouterLink>
-        <RouterLink to="/airpods" class="nav-link" :class="{ active: isCurrentRoute('/airpods') }" @click="closeMobileMenu">Destacados</RouterLink>
-        <!-- <a href="#products" class="nav-link" @click="closeMobileMenu(); scrollToProductStore()">Compra Ahora</a>
-        <a href="#contact" class="nav-link" @click="closeMobileMenu(); scrollToContact()">Contáctanos</a> -->
-      </div>
+        <div class="top-center">
+          <form class="search-form" @submit.prevent="submitSearch">
+            <input v-model="searchQuery" class="search-input" placeholder="Qué Buscas?" aria-label="Buscar" />
+            <button class="search-btn" aria-label="Buscar">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><path d="m21 21-4.35-4.35"/></svg>
+            </button>
+          </form>
+        </div>
 
-      <!-- Controles de usuario -->
-      <div class="nav-controls desktop-nav">
-        <RouterLink v-if="!isLoggedIn" class="btn access-btn" to="/login">Acceder</RouterLink>
-        <RouterLink v-if="isLoggedIn && isAdmin" class="btn admin-btn" to="/admin/products">⚙️ Panel Admin</RouterLink>
-        <RouterLink v-if="isLoggedIn" @click="logout" class="btn logout-btn" to="/">Cerrar sesión</RouterLink>
-        <div v-if="isLoggedIn" class="user-greeting">
-          <span>{{ username }}</span>
+        <div class="top-right">
+          <RouterLink v-if="!isLoggedIn" class="login-link" to="/login" aria-label="Iniciar sesión">
+            <span class="material-symbols-outlined icon-lock">lock</span>
+            <span>Iniciar Sesión</span>
+          </RouterLink>
+
+          <!-- Botón de búsqueda: usar la misma lupa del escritorio (visible sólo en móvil) -->
+          <button class="search-btn mobile-search-btn" @click="openMobileSearch" aria-label="Buscar" type="button">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><path d="m21 21-4.35-4.35"/></svg>
+          </button>
+
+          <div class="cart-btn" @click="toggleCart">
+            <span class="material-symbols-outlined icon-cart">shopping_cart</span>
+            <span class="cart-count">{{ totalItems }}</span>
+          </div>
         </div>
       </div>
 
-      <!-- Menu hamburguesa para mobile -->
+        <!-- Mobile search overlay -->
+        <div v-if="isMobileSearchOpen" class="mobile-search-overlay" @click.self="closeMobileSearch">
+          <form class="mobile-search-box" @submit.prevent="mobileSubmit">
+            <input
+              ref="mobileSearchInputRef"
+              v-model="searchQuery"
+              class="mobile-search-input"
+              placeholder="Buscar llantas, marca o modelo"
+              aria-label="Buscar"
+            />
+            <button class="mobile-search-submit" type="submit">Buscar</button>
+            <button type="button" class="mobile-search-close" @click="closeMobileSearch" aria-label="Cerrar búsqueda">✕</button>
+          </form>
+        </div>
+
+      <!-- Barra de categorías (ubicada en header) -->
+      <div class="categorybar">
+        <div class="nav-menu">
+          <RouterLink to="/maintenance" class="nav-link">Auto</RouterLink>
+          <RouterLink to="/maintenance" class="nav-link">Camioneta</RouterLink>
+          <RouterLink to="/maintenance" class="nav-link">Camión</RouterLink>
+          <RouterLink to="/maintenance" class="nav-link">Camión LV</RouterLink>
+          <RouterLink to="/maintenance" class="nav-link">Moto</RouterLink>
+          <RouterLink to="/maintenance" class="nav-link">ATV/UTV</RouterLink>
+          <RouterLink to="/maintenance" class="nav-link">OTR</RouterLink>
+          <RouterLink to="/maintenance" class="nav-link">Agro</RouterLink>
+          <RouterLink to="/maintenance" class="nav-link">Montacarga</RouterLink>
+          <RouterLink to="/" class="nav-link offers" @click.prevent="goToPromotions">OFERTAS</RouterLink>
+        </div>
+      </div>
+
+      <!-- Menu hamburguesa para mobile (mantener funcionalidad) -->
       <button class="hamburger-menu" @click="toggleMobileMenu" :class="{ 'active': isMobileMenuOpen }">
         <span></span>
         <span></span>
         <span></span>
       </button>
 
-      <!-- Menu mobile desplegable -->
+      <!-- Menu mobile desplegable (sin cambios funcionales) -->
       <div class="mobile-menu" :class="{ 'active': isMobileMenuOpen }">
         <div class="mobile-menu-content">
           <div class="mobile-nav-links">
-            <RouterLink to="/iphone" class="mobile-link" :class="{ active: isCurrentRoute('/iphone') }" @click="closeMobileMenu">Tecnología</RouterLink>
-            <RouterLink to="/mac" class="mobile-link" :class="{ active: isCurrentRoute('/mac') }" @click="closeMobileMenu">Navidad</RouterLink>
-            <RouterLink to="/ipad" class="mobile-link" :class="{ active: isCurrentRoute('/ipad') }" @click="closeMobileMenu">Hogar</RouterLink>
-            <RouterLink to="/watch" class="mobile-link" :class="{ active: isCurrentRoute('/watch') }" @click="closeMobileMenu">Ofertas</RouterLink>
-            <RouterLink to="/airpods" class="mobile-link" :class="{ active: isCurrentRoute('/airpods') }" @click="closeMobileMenu">Destacados</RouterLink>
-            <RouterLink to="/accesorios" class="mobile-link" :class="{ active: isCurrentRoute('/accesorios') }" @click="closeMobileMenu">Todos</RouterLink>
-            <!-- <a href="#products" class="mobile-link" @click="closeMobileMenu(); scrollToProductStore()">Compra Ahora</a>
-            <a href="#contact" class="mobile-link" @click="closeMobileMenu(); scrollToContact()">Contáctanos</a> -->
+            <RouterLink to="/" class="mobile-link" :class="{ active: isCurrentRoute('/') }" @click="closeMobileMenu">Inicio</RouterLink>
+            <RouterLink to="/maintenance" class="mobile-link" @click="closeMobileMenu">Llantas Moto</RouterLink>
+            <RouterLink to="/maintenance" class="mobile-link" @click="closeMobileMenu">Llantas Carro</RouterLink>
+            <RouterLink to="/maintenance" class="mobile-link" @click="closeMobileMenu">Buscar por vehículo</RouterLink>
+            <RouterLink to="/" class="mobile-link" @click="closeMobileMenu">Ofertas</RouterLink>
+            <RouterLink to="/" class="mobile-link" @click.prevent="() => { closeMobileMenu(); scrollToContact(); }">Contacto</RouterLink>
           </div>
 
           <div class="mobile-controls">
@@ -81,6 +119,8 @@
 
   <RouterView />
 
+  <CartModal />
+
   <!-- Botones flotantes de redes sociales -->
   <SocialFloating />
 </template>
@@ -89,12 +129,129 @@
 import { RouterLink, RouterView, useRoute } from 'vue-router';
 import { authService } from '@/services/api';
 import { onMounted, ref, watch, computed } from 'vue';
+import { useCart } from '@/composables/useCart'
 import router from './router';
 import SocialFloating from '@/components/SocialFloating.vue';
+import CartModal from '@/components/CartModal.vue'
 
 const isLoggedIn = ref(false);
 const username = ref('');
 const isMobileMenuOpen = ref(false);
+const searchQuery = ref('');
+const isMobileSearchOpen = ref(false);
+const mobileSearchInputRef = ref<HTMLInputElement | null>(null);
+
+// Buscar: si estamos en home, buscar en la página; si no, navegar a /buscar
+const hiddenProductStoreMap: Map<Element, string> = new Map()
+
+const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+const clearHighlights = () => {
+  const marks = Array.from(document.querySelectorAll('mark.app-search-mark'))
+  marks.forEach((m) => {
+    const parent = m.parentNode
+    if (!parent) return
+    parent.replaceChild(document.createTextNode(m.textContent || ''), m)
+    parent.normalize()
+  })
+}
+
+const hideProductStores = () => {
+  document.querySelectorAll('.product-store').forEach((el) => {
+    if (!hiddenProductStoreMap.has(el)) hiddenProductStoreMap.set(el, (el as HTMLElement).style.display || '')
+    ;(el as HTMLElement).style.display = 'none'
+  })
+}
+
+const restoreProductStores = () => {
+  hiddenProductStoreMap.forEach((orig, el) => {
+    ;(el as HTMLElement).style.display = orig
+  })
+  hiddenProductStoreMap.clear()
+}
+
+const performInPageSearch = (q: string) => {
+  try {
+    clearHighlights()
+    hideProductStores()
+
+    if (!q) return
+    const re = new RegExp(escapeRegExp(q), 'gi')
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null)
+    const nodes: Text[] = []
+    let n = walker.nextNode() as Text | null
+    while (n) {
+      nodes.push(n)
+      n = walker.nextNode() as Text | null
+    }
+
+    let firstMark: HTMLElement | null = null
+    nodes.forEach((textNode) => {
+      const parent = textNode.parentElement
+      if (!parent) return
+      const tag = parent.tagName.toLowerCase()
+      if (['script', 'style', 'noscript', 'textarea', 'input'].includes(tag)) return
+      const text = textNode.nodeValue || ''
+      if (!re.test(text)) return
+
+      // reconstruir con marks
+      re.lastIndex = 0
+      const frag = document.createDocumentFragment()
+      let lastIndex = 0
+      let m: RegExpExecArray | null
+      while ((m = re.exec(text)) !== null) {
+        const before = text.substring(lastIndex, m.index)
+        if (before) frag.appendChild(document.createTextNode(before))
+        const mark = document.createElement('mark')
+        mark.className = 'app-search-mark'
+        mark.textContent = m[0]
+        frag.appendChild(mark)
+        if (!firstMark) firstMark = mark
+        lastIndex = m.index + m[0].length
+      }
+      const after = text.substring(lastIndex)
+      if (after) frag.appendChild(document.createTextNode(after))
+      parent.replaceChild(frag, textNode)
+    })
+
+    if (firstMark) {
+      try {
+        (firstMark as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'center' })
+      } catch (e) {
+        // ignore
+      }
+    }
+  } catch (err) {
+    console.error('[App] error performInPageSearch', err)
+  }
+}
+
+const closeInPageSearch = () => {
+  clearHighlights()
+  restoreProductStores()
+}
+
+const submitSearch = () => {
+  const q = (searchQuery.value || '').trim()
+  if (!q) {
+    // vaciar búsqueda: quitar highlights y navegar a /buscar vacío
+    closeInPageSearch()
+    router.push({ path: '/buscar' })
+    return
+  }
+
+  if (currentRoute.path === '/') {
+    performInPageSearch(q)
+    searchQuery.value = ''
+  } else {
+    // en otras páginas mantenemos comportamiento anterior
+    router.push({ path: '/buscar', query: { q } })
+    searchQuery.value = ''
+  }
+}
+
+// Carrito
+const { totalItems, toggleCart } = useCart()
 
 // Router hooks
 const currentRoute = useRoute();
@@ -116,6 +273,25 @@ const closeMobileMenu = () => {
   isMobileMenuOpen.value = false;
 };
 
+const goHome = () => {
+  // cerrar menú móvil y navegar/scroll a la sección Llantas Hero
+  closeMobileMenu();
+
+  const scrollToHero = () => {
+    const el = document.querySelector('.llantas-hero') as HTMLElement | null;
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  // Si ya estamos en home, solo hacer scroll; si no, navegar y luego hacer scroll
+  if (currentRoute.path === '/') {
+    setTimeout(scrollToHero, 80);
+  } else {
+    router.push({ path: '/' }).then(() => setTimeout(scrollToHero, 120));
+  }
+};
+
 // Función para hacer scroll a la sección de productos
 /* const scrollToProductStore = () => {
   const productStoreSection = document.querySelector('.product-store');
@@ -128,15 +304,61 @@ const closeMobileMenu = () => {
 }; */
 
 // Función para hacer scroll a la sección de contacto
-/* const scrollToContact = () => {
+const scrollToContact = () => {
   const contactSection = document.querySelector('.contact-section');
   if (contactSection) {
-    contactSection.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
+    contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else {
+    // Si no existe, navegar a home y hacer pequeño delay para el scroll
+    router.push('/').then(() => setTimeout(() => {
+      const el = document.querySelector('.contact-section')
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 400))
   }
-}; */
+}
+
+const openWhatsapp = () => {
+  const text = 'Hola! Necesito asesoría para elegir una llanta.'
+  // Usar el número principal +57 313 893 6332
+  window.open(`https://api.whatsapp.com/send?phone=573138936332&text=${encodeURIComponent(text)}`, '_blank')
+}
+
+// Navegar a la página de búsqueda desde el botón móvil (abrir overlay)
+const openMobileSearch = () => {
+  isMobileSearchOpen.value = true
+  // dar tiempo a render y enfocar input
+  setTimeout(() => mobileSearchInputRef.value?.focus(), 80)
+}
+
+const closeMobileSearch = () => {
+  isMobileSearchOpen.value = false
+}
+
+const mobileSubmit = () => {
+  submitSearch()
+  closeMobileSearch()
+}
+
+// Ir a la sección de promociones en la home
+const goToPromotions = () => {
+  closeMobileMenu();
+
+  const scrollToPromos = () => {
+    const el = document.querySelector('.promotions') as HTMLElement | null;
+    if (el) {
+      // ajustar por altura del header fijo
+      const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--navbar-height')) || 76;
+      const top = el.getBoundingClientRect().top + window.pageYOffset - navH - 8;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  };
+
+  if (currentRoute.path === '/') {
+    setTimeout(scrollToPromos, 80);
+  } else {
+    router.push({ path: '/' }).then(() => setTimeout(scrollToPromos, 140));
+  }
+}
 
 const checkAuthStatus = () => {
   isLoggedIn.value = authService.isAuthenticated();
@@ -173,21 +395,112 @@ watch(route, () => {
 
 <style scoped>
 .navbar {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.9) 100%);
-  margin: 0;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1000;
-  height: 75px;
-  padding: 0 clamp(20px, 5vw, 60px);
-  box-shadow: 0 2px 24px rgba(220, 38, 38, 0.15), 0 1px 3px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(220, 38, 38, 0.2);
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  box-shadow: none;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.navbar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0px clamp(16px, 4vw, 36px);
+}
+
+.top-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-container.small {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.creative-logo.small .logo-circle {
+  width: 44px;
+  height: 44px;
+}
+
+.brand-text {
+  font-weight: 800;
+  font-size: 18px;
+  color: #111827;
+  letter-spacing: 0.6px;
+}
+
+.site-logo {
+  height: 84px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.contact-inline {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-left: 12px;
+  color: #374151;
+  font-weight: 600;
+}
+
+.contact-inline a { text-decoration: none; color: inherit; display:flex; gap:8px; align-items:center }
+
+.top-center { flex: 1; display:flex; justify-content:center }
+
+.search-form { display:flex; align-items:center; gap:8px; width:100%; max-width:360px }
+.search-input { width:100%; padding:8px 12px; border-radius:999px; border:1px solid rgba(0,0,0,0.08); background:#fff; font-size:14px }
+.search-btn { background:#111827; color:#fff; border:none; padding:8px 10px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center }
+
+.top-right { display:flex; align-items:center; gap:12px }
+.login-link { color:#111827; text-decoration:none; font-weight:600; display:inline-flex; align-items:center; gap:8px }
+.login-link .icon-lock { stroke:#111827 }
+.btn-register { background:#ef2330; color:#fff; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:700 }
+
+.cart-btn { display:flex; align-items:center; gap:8px; cursor:pointer }
+.cart-count { background:#ef2330; color:#fff; font-size:12px; padding:2px 6px; border-radius:10px }
+
+.phone-link { display:inline-flex; align-items:center; gap:8px; text-decoration:none; color:#111827; font-weight:700 }
+.phone-link .icon-phone { color:#111827 }
+.whatsapp-cta { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; background:#25D366; color:#fff; border-radius:8px; text-decoration:none; font-weight:700 }
+.whatsapp-cta .icon-whatsapp { width:18px; height:18px; display:block }
+.icon-lock, .icon-phone, .icon-whatsapp { width:18px; height:18px }
+
+/* Material Symbols baseline */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  font-size: 18px;
+  line-height: 1;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.categorybar { border-top: 1px solid rgba(0,0,0,0.04); background: #f3f3f3 }
+.nav-menu { display:flex; gap:18px; justify-content:center; padding:0px 20px }
+.nav-link { color:#374151; text-decoration:none; font-weight:600; font-size:14px }
+.nav-link.offers { color:#ef2330; font-weight:800 }
+
+.hamburger-menu { display:none; color: #1a1a1a; }
+
+.mobile-search-btn { display: none !important; }
+
+@media (max-width: 900px) {
+  .top-center { display:none }
+  .nav-menu { overflow-x:auto; padding:8px 12px; gap:12px }
+  .hamburger-menu { display:flex }
 }
 
 /* Logo y marca */
@@ -331,19 +644,19 @@ watch(route, () => {
 .nav-menu {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 10px;
   margin-left: auto;
   margin-right: 30px;
 }
 
 .nav-link {
-  color: rgba(255, 255, 255, 0.85);
+  color: #374151;
   text-decoration: none;
   font-weight: 600;
   font-size: 15px;
-  padding: 10px 18px;
-  border-radius: 12px;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 9px 14px;
+  border-radius: 8px;
+  transition: none;
   position: relative;
   letter-spacing: 0.3px;
 }
@@ -351,19 +664,18 @@ watch(route, () => {
 .nav-link::after {
   content: '';
   position: absolute;
-  bottom: 5px;
+  bottom: 4px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
   height: 2px;
   background: var(--primary-red);
-  transition: width 0.3s ease;
+  transition: width 0.2s ease;
 }
 
 .nav-link:hover {
-  color: var(--white);
-  background-color: rgba(220, 38, 38, 0.1);
-  transform: translateY(-2px);
+  color: #111827;
+  background-color: rgba(0,0,0,0.04);
 }
 
 .nav-link:hover::after {
@@ -372,7 +684,7 @@ watch(route, () => {
 
 .nav-link.active {
   color: var(--primary-red);
-  background: rgba(220, 38, 38, 0.15);
+  background: rgba(239,35,48,0.08);
 }
 
 .nav-link.active::after {
@@ -516,14 +828,13 @@ watch(route, () => {
   transform: rotate(-45deg) translate(7px, -6px);
 }
 
-/* Menu mobile */
 .mobile-menu {
   display: none;
   position: fixed;
-  top: 70px;
+  top: var(--navbar-height, 70px);
   left: 0;
   width: 100%;
-  height: calc(100vh - 70px);
+  height: calc(100vh - var(--navbar-height, 70px));
   background: var(--brand-gradient);
   transform: translateX(-100%);
   transition: transform 0.3s ease;
@@ -627,7 +938,7 @@ watch(route, () => {
 /* Responsive */
 @media (max-width: 768px) {
   .navbar {
-    height: 70px;
+    height: var(--navbar-height, 70px);
     padding: 0 20px;
   }
 
@@ -663,6 +974,43 @@ watch(route, () => {
   }
 }
 
+/* Mobile header adjustments: hide categorybar and compact contact */
+@media (max-width: 900px) {
+  .categorybar { display: none; }
+  .contact-inline { display: none; }
+  .top-center { display: none; }
+  .navbar { height: var(--navbar-height, 76px); }
+  .top-left { gap: 8px; }
+
+  /* Layout: logo a la izquierda; controles (carrito + hamburguesa) a la derecha */
+  .navbar-top { justify-content: flex-start; position: relative; padding: 10px 12px; }
+
+  /* Logo alineado a la izquierda */
+  .site-logo { height: 48px; margin: 0; display: block; }
+
+  /* Carrito, búsqueda y hamburguesa en la esquina derecha */
+  .cart-btn { position: absolute; right: 56px; top: 20px; margin: 0; z-index: 1002; }
+  .mobile-search-btn { display: none; }
+  .hamburger-menu { display: flex; position: absolute; right: 12px; top: 20px; z-index: 1002; }
+
+  /* Color de las líneas de la hamburguesa (negro por defecto) */
+  .hamburger-menu span { background-color: #000 !important; }
+
+  /* Mostrar el botón de búsqueda en móvil y ocultar otros controles extra */
+  .mobile-search-btn { display: flex !important; position: absolute; right: 116px; top: 18px; z-index: 1002; background: #111827; border: none; padding: 6px; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 999px; }
+  .mobile-search-btn svg { stroke: #fff; width: 18px; height: 18px }
+  .top-right > *:not(.cart-btn):not(.mobile-search-btn) { display: none; }
+
+  /* Asegurar suficiente padding para el logo y evitar solapamientos */
+  .navbar-top { padding-left: 12px; padding-right: 120px; }
+}
+
+@media (max-width: 480px) {
+  .site-logo { height: 55px; }
+  .search-input { max-width: 200px }
+  .material-symbols-outlined { font-size: 28px; }
+}
+
 @media (max-width: 480px) {
   .navbar {
     padding: 0 15px;
@@ -687,6 +1035,34 @@ watch(route, () => {
     font-size: 18px;
   }
 }
+
+/* Mobile search overlay styles */
+.mobile-search-overlay {
+  position: fixed;
+  top: var(--navbar-height, 76px);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 1003;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 18px;
+}
+.mobile-search-box {
+  width: 100%;
+  max-width: 720px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.mobile-search-input { flex:1; padding:10px 12px; border-radius:8px; border:1px solid #e6e6e6; font-size:16px }
+.mobile-search-submit { background: var(--primary-red); color:#fff; border:none; padding:10px 14px; border-radius:8px }
+.mobile-search-close { background:transparent; border:none; font-size:18px; padding:6px 8px }
 
 /* Quitar subrayado del link principal */
 .link-navbar {
@@ -728,4 +1104,14 @@ watch(route, () => {
 .link-navbar:hover {
   text-decoration: none !important;
 }
+</style>
+
+<!-- Global styles for in-page search highlights -->
+<style>
+  mark.app-search-mark { background: #ffd54f; color: #000; padding: 0 2px; border-radius: 2px; }
+
+  /* Ocultar carrito flotante en pantallas móviles */
+  @media (max-width: 900px) {
+    .floating-cart { display: none !important; }
+  }
 </style>

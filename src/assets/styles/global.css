@@ -1,4 +1,4 @@
-/* SOYDANI - Paleta de colores Rojo, Negro, Blanco */
+/* Paleta de colores principal - Rojo, Negro, Blanco (marca LLANTA RR) */
 :root {
   /* Colores principales - Rojo, Negro, Blanco */
   --primary-red: #DC2626;       /* Rojo principal */
@@ -8,7 +8,7 @@
   --white: #ffffff;             /* Blanco */
   --black: #000000;             /* Negro puro */
 
-  /* Paleta de marca SOYDANI */
+  /* Paleta de marca - CASA COMERCIAL DE LA LLANTA RR */
   --brand-primary: #DC2626;            /* Rojo principal */
   --brand-primary-contrast: #ffffff;   /* Texto sobre superficies rojas */
   --brand-bg-start: #000000;           /* Negro puro inicio */

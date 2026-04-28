@@ -1,25 +1,23 @@
-# Robots.txt para SOYDANI
-# Permite el rastreo de todos los motores de búsqueda
+# Robots.txt para CASA COMERCIAL DE LA LLANTA RR
+# Permite el rastreo de todas las secciones públicas
 
 User-agent: *
 Allow: /
 
-# Excluir páginas administrativas y privadas
+# Evitar rastreo de rutas administrativas y APIs
 Disallow: /admin
 Disallow: /login
 Disallow: /api/
 Disallow: /*.json$
 
-# Excluir páginas de proceso de pago en curso
+# Evitar rastreo de endpoints de pago en proceso
 Disallow: /checkout/processing
 Disallow: /payment-processing
 
-# Permitir específicamente páginas importantes
-Allow: /iphone
-Allow: /mac
-Allow: /ipad
-Allow: /apple-watch
-Allow: /accesorios
+# Páginas principales permitidas
+Allow: /moto
+Allow: /carro
+Allow: /promociones
 Allow: /checkout
 Allow: /terms
 
@@ -27,9 +25,9 @@ Allow: /terms
 Crawl-delay: 1
 
 # Sitemap
-Sitemap: https://www.mistorepro.com/sitemap.xml
+Sitemap: /sitemap.xml
 
-# Motores de búsqueda específicos
+# Reglas específicas por bot
 User-agent: Googlebot
 Allow: /
 Crawl-delay: 0

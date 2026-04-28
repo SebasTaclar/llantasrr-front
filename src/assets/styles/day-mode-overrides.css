@@ -1,0 +1,73 @@
+/* Day mode overrides: simplificar UI, quitar animaciones y brillos */
+
+:root {
+  --bg-primary: #ffffff;
+  --text-primary: #111827;
+  --text-muted: #6b7280;
+  --card-bg: #ffffff;
+  --border-color: #e6e9ee;
+  --primary-red: #DC2626;
+}
+
+/* Neutralizar animaciones, transiciones y efectos pesados */
+* {
+  animation: none !important;
+  transition: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+}
+
+/* Hero: fondo claro y sin overlay */
+.hero-carousel {
+  background: var(--bg-primary) !important;
+  min-height: 420px !important;
+  box-shadow: none !important;
+}
+.hero-carousel .slide-overlay { display: none !important; }
+
+/* Botones: apariencia plana */
+.btn-explore {
+  background: var(--primary-red) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+/* Tarjetas de producto: fondo claro, borde sutil, sin elevación */
+.product-card,
+.product-card-premium,
+.product-image-container,
+.card-base {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+.product-card:hover { transform: none !important; }
+
+/* Sección showcase */
+.showcase-section { background: transparent !important; color: var(--text-primary) !important; }
+
+
+.logo-circle-footer { background: transparent !important; border: none !important; box-shadow: none !important; }
+
+/* Contacto: fondo claro */
+.contact-section { background: transparent !important; border-top: 1px solid var(--border-color) !important; }
+
+/* Botones flotantes sociales: estilo plano */
+.floating-social .social-btn,
+.floating-whatsapp .social-btn {
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+  opacity: 0.95 !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Modal overlay menos opaco */
+.modal-overlay { background: rgba(0,0,0,0.35) !important; backdrop-filter: none !important; }
+
+/* No-op keyframes para evitar conflictos */
+@keyframes noneAnim { from { } to { } }

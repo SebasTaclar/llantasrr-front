@@ -1,71 +1,25 @@
 <template>
-  <!-- WhatsApp flotante a la izquierda -->
+  <!-- WhatsApp flotante (ahora a la derecha), icono SVG sin fondo blanco -->
   <div class="floating-whatsapp">
-    <a
-      :href="whatsappLink"
-      target="_blank"
-      rel="noopener"
-      class="social-btn whatsapp"
-    >
-      <img
-        src="https://cdn-icons-png.flaticon.com/512/733/733585.png"
-        alt="WhatsApp"
-        class="social-icon"
-      >
-      <span class="social-tooltip left">WhatsApp</span>
-    </a>
-  </div>
-
-  <!-- Redes sociales flotantes a la derecha -->
-  <div class="floating-social">
-    <a
-      href="https://www.facebook.com/danirodriguez.col"
-      target="_blank"
-      rel="noopener"
-      class="social-btn facebook"
-    >
-      <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+    <a :href="whatsappLink" target="_blank" rel="noopener" class="social-btn whatsapp" aria-label="WhatsApp">
+      <svg class="social-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32" aria-hidden="true">
+        <path fill="#ffffff" d="M20.52 3.48A11.89 11.89 0 0 0 12 0C5.373 0 0 5.373 0 12c0 2.11.55 4.08 1.6 5.84L0 24l6.47-1.66A11.93 11.93 0 0 0 12 24c6.627 0 12-5.373 12-12 0-3.2-1.25-6.14-3.48-8.52zM12 21.5c-1.48 0-2.93-.4-4.2-1.16l-.3-.17-3.82.98.98-3.73-.2-.33A9.5 9.5 0 0 1 2.5 12 9.5 9.5 0 0 1 12 2.5c5.24 0 9.5 4.26 9.5 9.5S17.24 21.5 12 21.5zM16 14.2c-.3-.15-1.77-.87-2.04-.97-.27-.1-.46-.15-.65.15-.19.3-.72.97-.88 1.17-.16.19-.32.22-.6.07-.27-.15-1.14-.42-2.17-1.34-.8-.71-1.34-1.6-1.5-1.87-.16-.27-.02-.41.12-.56.12-.12.27-.32.4-.48.13-.16.17-.27.27-.45.1-.18.05-.34-.03-.49-.08-.15-.65-1.57-.89-2.16-.23-.57-.47-.49-.65-.5l-.55-.01c-.19 0-.5.07-.77.34-.28.27-1.07 1.05-1.07 2.56 0 1.51 1.1 2.97 1.25 3.18.15.22 2.15 3.35 5.22 4.7 3.07 1.36 3.07 0.91 3.62.85.55-.06 1.77-.72 2.02-1.41.25-.69.25-1.28.17-1.41-.08-.13-.28-.2-.57-.36z"/>
       </svg>
-      <span class="social-tooltip">Facebook</span>
-    </a>
-
-    <a
-      href="https://www.instagram.com/soydanirodriguezz/"
-      target="_blank"
-      rel="noopener"
-      class="social-btn instagram"
-    >
-      <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-      </svg>
-      <span class="social-tooltip">Instagram</span>
-    </a>
-
-    <a
-      href="https://www.tiktok.com/@soydanirodriguezz"
-      target="_blank"
-      rel="noopener"
-      class="social-btn tiktok"
-    >
-      <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
-      </svg>
-      <span class="social-tooltip">TikTok</span>
+      <span class="social-tooltip right">WhatsApp</span>
     </a>
   </div>
 </template>
 
 <script setup lang="ts">
-// Número en formato internacional (sin '+')
-const rawNumber = '573209860099'
+// Número en formato internacional (sin '+') — actualizado a +57 3138936332
+const rawNumber = '573138936332'
 // Normaliza a solo dígitos
 const whatsappNumber = rawNumber.replace(/[^\d]/g, '')
 
 // Validación mínima: debe empezar por 57 y tener al menos 12 dígitos (57 + 10)
 const isValidWhatsAppNumber = /^57\d{10}$/.test(whatsappNumber)
 
-const defaultMessage = 'Hola! Me interesa un producto de SOYDANI. ¿Me pueden brindar más información?'
+const defaultMessage = 'Hola! Me interesa una llanta en CASA COMERCIAL DE LA LLANTA RR. ¿Me pueden brindar más información?'
 // Endpoint alternativo más tolerante que wa.me
 const whatsappLink = isValidWhatsAppNumber
   ? `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(defaultMessage)}`
@@ -80,7 +34,8 @@ defineOptions({ name: 'SocialFloating' })
 .floating-whatsapp {
   position: fixed;
   bottom: 20px;
-  left: 20px;
+  right: 20px;
+  left: auto;
   z-index: 1000;
 }
 
@@ -229,20 +184,19 @@ defineOptions({ name: 'SocialFloating' })
 }
 
 /* Tooltip para WhatsApp (izquierda) */
-.floating-whatsapp .social-tooltip.left {
-  left: 70px;
+.floating-whatsapp .social-tooltip.right {
+  right: 70px;
+  left: auto;
 }
 
-.floating-whatsapp .social-tooltip.left::after {
+.floating-whatsapp .social-tooltip.right::after {
   content: '';
   position: absolute;
-  right: 100%;
-  left: auto;
+  left: 100%;
   top: 50%;
   transform: translateY(-50%);
   border: 6px solid transparent;
-  border-right-color: rgba(0, 0, 0, 0.9);
-  border-left-color: transparent;
+  border-left-color: rgba(0, 0, 0, 0.9);
 }
 
 .social-btn:hover .social-tooltip {
@@ -265,7 +219,7 @@ defineOptions({ name: 'SocialFloating' })
 }
 
 .floating-whatsapp .social-btn {
-  animation: slideInLeft 0.6s ease;
+  animation: slideInRight 0.6s ease;
   animation-fill-mode: both;
 }
 
@@ -314,7 +268,7 @@ defineOptions({ name: 'SocialFloating' })
 }
 
 .floating-whatsapp .social-btn.whatsapp {
-  animation: slideInLeft 0.6s ease, pulse 2s ease-in-out infinite;
+  animation: slideInRight 0.6s ease, pulse 2s ease-in-out infinite;
 }
 
 /* Responsivo */
@@ -330,7 +284,8 @@ defineOptions({ name: 'SocialFloating' })
   }
 
   .floating-whatsapp {
-    left: 15px;
+    right: 15px;
+    left: auto;
   }
 
   .social-btn {
@@ -352,8 +307,8 @@ defineOptions({ name: 'SocialFloating' })
     right: 62px;
   }
 
-  .floating-whatsapp .social-tooltip.left {
-    left: 62px;
+  .floating-whatsapp .social-tooltip.right {
+    right: 62px;
   }
 }
 
@@ -369,7 +324,8 @@ defineOptions({ name: 'SocialFloating' })
   }
 
   .floating-whatsapp {
-    left: 10px;
+    right: 10px;
+    left: auto;
   }
 
   .social-btn {

@@ -3,7 +3,7 @@
     <div class="dashboard-header">
       <h1 class="dashboard-title">
         <span class="icon">⚙️</span>
-        Panel de Administración - SOYDANI
+        Panel de Administración - CASA COMERCIAL DE LA LLANTA RR
       </h1>
       <p class="dashboard-subtitle">Gestiona productos, categorías y configuraciones</p>
     </div>

@@ -14,21 +14,21 @@
         <section class="terms-section">
           <h2>1. Información General</h2>
           <p>
-            Bienvenido a SOYDANI. Al acceder y realizar compras en nuestra plataforma, aceptas cumplir con estos términos y condiciones.
-            SOYDANI es una tienda en línea especializada en la venta de tecnología, decoración navideña y artículos del hogar.
+            Bienvenido a CASA COMERCIAL DE LA LLANTA RR. Al acceder y realizar compras en nuestra plataforma, aceptas cumplir con estos términos y condiciones.
+            Somos una tienda en línea especializada en la venta de llantas y servicios relacionados para moto y carro.
           </p>
         </section>
 
         <section class="terms-section">
           <h2>2. Productos y Servicios</h2>
           <p>
-            Ofrecemos una variedad de productos en tres categorías principales:
+            Ofrecemos una variedad de productos y servicios relacionados con neumáticos y ruedas:
           </p>
           <ul>
-            <li>Tecnología: Dispositivos electrónicos, accesorios, gadgets y equipos tecnológicos</li>
-            <li>Navidad: Decoración navideña, árboles, luces, adornos y artículos festivos</li>
-            <li>Hogar: Artículos para el hogar, decoración, organizadores y accesorios domésticos</li>
-            <li>Productos con múltiples opciones de colores y configuraciones</li>
+            <li>Llantas para moto: Modelos para ciudad, montaña y competición</li>
+            <li>Llantas para carro: Neumáticos para uso urbano, carretera y camioneta</li>
+            <li>Servicios: Montaje, balanceo, alineación y asesoría técnica</li>
+            <li>Accesorios: Cámaras, válvulas y productos complementarios</li>
           </ul>
           <p>
             Nos reservamos el derecho de modificar, discontinuar o actualizar cualquier producto sin previo aviso.
@@ -55,14 +55,11 @@
         <section class="terms-section">
           <h2>4. Envíos y Entregas</h2>
           <p>
-            <strong>Envío a domicilio:</strong> Realizamos envíos a nivel nacional. El costo de envío es de $15,000 COP para Bogotá
-            y área metropolitana. Para otras ciudades, el costo puede variar según la ubicación. El tiempo estimado de entrega es de
-            3 a 5 días hábiles en Bogotá y de 5 a 8 días hábiles en el resto del país.
+            <strong>Envío a domicilio:</strong> Realizamos envíos a nivel nacional. Los costos y tiempos de entrega varían según la ubicación y la disponibilidad del producto.
+            El tiempo estimado de entrega será informado durante el proceso de compra.
           </p>
           <p>
-            <strong>Recogida en tienda:</strong> Puedes recoger tu pedido sin costo adicional en nuestra tienda física ubicada en
-            Centro comercial Unilago, Bogotá - Loc. 1-124, Cra. 15 # 78 - 33, Bogotá D.C. Recibirás una notificación cuando tu pedido esté listo para ser recogido. Horario de atención:
-            Lunes a Sábado de 9:30 AM a 7:00 PM. Domingos cerrado.
+            <strong>Recogida en taller/tienda:</strong> Si ofreces recogida, la información del punto de recogida y horarios aparecerá en la página de cada producto o durante el checkout.
           </p>
           <p>
             No nos hacemos responsables por retrasos en la entrega causados por la empresa de mensajería, condiciones climáticas,
@@ -73,13 +70,13 @@
         <section class="terms-section">
           <h2>5. Devoluciones y Reembolsos</h2>
           <p>
-            Aceptamos devoluciones dentro de los 15 días posteriores a la recepción del producto, siempre y cuando:
+            Aceptamos devoluciones y cambios dentro de los 15 días posteriores a la recepción del producto, siempre y cuando:
           </p>
           <ul>
-            <li>El producto se encuentre en perfectas condiciones, sin usar y con empaques originales sellados</li>
-            <li>Se conserve el empaque original de Apple con todos los accesorios incluidos</li>
-            <li>El dispositivo no haya sido activado ni configurado</li>
-            <li>No presente señales de uso, ralladuras o daños</li>
+            <li>El producto se encuentre en condiciones aptas para la venta (sin daños por instalación incorrecta)</li>
+            <li>La llanta no haya sido instalada ni utilizada (salvo casos de defecto de fábrica)
+            </li>
+            <li>Se presente la factura o comprobante de compra</li>
           </ul>
           <p>
             Para iniciar una devolución, contáctanos a través de nuestros canales de atención al cliente.
@@ -91,8 +88,8 @@
           <h2>6. Garantía</h2>
           <p>
             Todos nuestros productos cuentan con garantía según las especificaciones del fabricante contra defectos de fabricación.
-            La garantía varía según el tipo de producto y fabricante. Para productos electrónicos, la garantía estándar cubre generalmente 1 año desde la fecha de compra.
-            La garantía no cubre daños causados por accidentes, líquidos, uso indebido o modificaciones no autorizadas.
+            La garantía de llantas generalmente cubre defectos de fabricación y montaje incorrecto del distribuidor autorizado según la política del fabricante.
+            La garantía no cubre daños por pinchazos, rodado con presión inadecuada, uso en condiciones no recomendadas o desgaste normal.
           </p>
         </section>        <section class="terms-section">
           <h2>6. Garantía de Productos</h2>
@@ -133,9 +130,7 @@
         <section class="terms-section">
           <h2>8. Propiedad Intelectual</h2>
           <p>
-            Apple, el logotipo de Apple, iPhone, iPad, Mac, MacBook, Apple Watch, AirPods y otros productos y nombres de Apple son marcas registradas de Apple Inc.
-            Apple Store Pro es un distribuidor autorizado. Todas las marcas y logos son propiedad de sus respectivos titulares.
-            No está permitido el uso no autorizado de estos elementos.
+            Todas las marcas y logos mencionados en la plataforma pertenecen a sus respectivos titulares. No está permitido el uso no autorizado de estos elementos.
           </p>
         </section>        <section class="terms-section">
           <h2>9. Responsabilidades del Usuario</h2>
@@ -152,7 +147,7 @@
         <section class="terms-section">
           <h2>10. Limitación de Responsabilidad</h2>
           <p>
-            AppsStore Pro no se hace responsable por:
+            CASA COMERCIAL DE LA LLANTA RR no se hace responsable por:
           </p>
           <ul>
             <li>Daños indirectos, incidentales o consecuentes derivados del uso de productos</li>
@@ -182,9 +177,9 @@
             puedes contactarnos a través de:
           </p>
           <ul>
-            <li><strong>Instagram:</strong> @appsstorepro</li>
+            <li><strong>Instagram:</strong> @llantasrr</li>
             <li><strong>Teléfono:</strong> +57 320 986 0099</li>
-            <li><strong>Dirección física:</strong> Centro comercial Unilago, Bogotá - Loc. 1-124, Cra. 15 # 78 - 33, Bogotá D.C.</li>
+            <li><strong>Dirección física:</strong> Dirección y horarios se publicarán en la página de contacto y tienda.</li>
           </ul>
           <p>
             Nuestro equipo de atención al cliente está disponible de lunes a sábado de 9:30 AM a 7:00 PM.

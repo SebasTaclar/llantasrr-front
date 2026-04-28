@@ -192,11 +192,7 @@
     <!-- Botón del carrito flotante -->
     <div v-if="totalItems > 0" class="floating-cart" @click="toggleCart">
       <div class="cart-icon">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="m5 7 1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12"/>
-          <path d="M22 7H2"/>
-          <path d="m9 3 2-2 2 2"/>
-        </svg>
+        <span class="material-symbols-outlined icon-cart">shopping_cart</span>
         <span class="cart-badge">{{ totalItems }}</span>
       </div>
       <div class="cart-tooltip">Ver carrito de compras</div>

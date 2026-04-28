@@ -2,8 +2,8 @@
   "tournaments": [
     {
       "id": "1",
-      "name": "Colección soydanirodriguezz 2025 - Temporada Primavera",
-      "description": "Colección oficial de wallpapers para todas las categorías",
+      "name": "Colección LLANTAS RR 2025 - Temporada Primavera",
+      "description": "Colección oficial de promociones y diseños para llantas y accesorios",
       "startDate": "2025-09-01",
       "endDate": "2025-11-30",
       "status": "registration_open",
@@ -16,8 +16,8 @@
     },
     {
       "id": "2",
-      "name": "Colección Digital soydanirodriguezz",
-      "description": "Colección exclusiva de diseños digitales",
+      "name": "Colección Digital LLANTAS RR",
+      "description": "Colección exclusiva de diseños y materiales promocionales",
       "startDate": "2025-10-15",
       "endDate": "2025-12-15",
       "status": "registration_open",
@@ -30,8 +30,8 @@
     },
     {
       "id": "3",
-      "name": "Wallpapers Premium soydanirodriguezz",
-      "description": "Wallpapers especializados de alta calidad",
+      "name": "Promociones Premium LLANTAS RR",
+      "description": "Promociones y paquetes premium de temporada",
       "startDate": "2025-11-01",
       "endDate": "2026-01-31",
       "status": "registration_open",

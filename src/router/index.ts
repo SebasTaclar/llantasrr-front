@@ -13,11 +13,43 @@ declare module 'vue-router' {
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  // Always scroll to top on navigation unless browser provides a saved position
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    }
+    return { left: 0, top: 0 }
+  },
   routes: [
     {
       path: '/',
       name: 'home',
       component: Home,
+    },
+    {
+      path: '/moto',
+      name: 'moto',
+      component: () => import('../views/MotoPage.vue'),
+    },
+    {
+      path: '/carro',
+      name: 'carro',
+      component: () => import('../views/CarroPage.vue'),
+    },
+    {
+      path: '/buscar',
+      name: 'buscar',
+      component: () => import('../views/SearchResults.vue'),
+    },
+    {
+      path: '/promociones',
+      name: 'promociones',
+      component: () => import('../views/PromotionsPage.vue'),
+    },
+    {
+      path: '/maintenance',
+      name: 'maintenance',
+      component: () => import('../views/Maintenance.vue'),
     },
     {
       path: '/login',
