@@ -7,7 +7,7 @@
           Volver
         </button>
         <h1>Términos y Condiciones</h1>
-        <p class="last-update">Última actualización: 12 de octubre de 2025</p>
+        <p class="last-update">Última actualización: 22 de mayo de 2026</p>
       </div>
 
       <div class="terms-content">
@@ -15,7 +15,7 @@
           <h2>1. Información General</h2>
           <p>
             Bienvenido a CASA COMERCIAL DE LA LLANTA RR. Al acceder y realizar compras en nuestra plataforma, aceptas cumplir con estos términos y condiciones.
-            Somos una tienda en línea especializada en la venta de llantas y servicios relacionados para moto y carro.
+            Somos una tienda en línea especializada en la venta de llantas y servicios relacionados.
           </p>
         </section>
 
@@ -25,10 +25,10 @@
             Ofrecemos una variedad de productos y servicios relacionados con neumáticos y ruedas:
           </p>
           <ul>
-            <li>Llantas para moto: Modelos para ciudad, montaña y competición</li>
-            <li>Llantas para carro: Neumáticos para uso urbano, carretera y camioneta</li>
+            <li>Llantas para moto</li>
+            <li>Llantas para automóvil - Camioneta - Camión</li>
+            <li>Llantas para Agrícola y Montacarga</li>
             <li>Servicios: Montaje, balanceo, alineación y asesoría técnica</li>
-            <li>Accesorios: Cámaras, válvulas y productos complementarios</li>
           </ul>
           <p>
             Nos reservamos el derecho de modificar, discontinuar o actualizar cualquier producto sin previo aviso.
@@ -153,7 +153,6 @@
             <li>Daños indirectos, incidentales o consecuentes derivados del uso de productos</li>
             <li>Interrupciones del servicio por mantenimiento o problemas técnicos</li>
             <li>Pérdida de datos o información durante el proceso de compra</li>
-            <li>Resultados deportivos de los equipos cuyos productos comercializamos</li>
           </ul>
           <p>
             Nuestra responsabilidad máxima en cualquier caso no excederá el valor del producto adquirido.
@@ -177,12 +176,12 @@
             puedes contactarnos a través de:
           </p>
           <ul>
-            <li><strong>Instagram:</strong> @llantasrr</li>
-            <li><strong>Teléfono:</strong> +57 320 986 0099</li>
+            <li><strong>Instagram:</strong> @johnlrojas</li>
+            <li><strong>Teléfono:</strong> +57 313 893 6332</li>
             <li><strong>Dirección física:</strong> Dirección y horarios se publicarán en la página de contacto y tienda.</li>
           </ul>
           <p>
-            Nuestro equipo de atención al cliente está disponible de lunes a sábado de 9:30 AM a 7:00 PM.
+            Nuestro equipo de atención al cliente está disponible de lunes a viernes de 8:00 AM a 6:00 PM, sabados de 8:00 AM a 3:00 PM .
             Domingos cerrado.
           </p>
         </section>
@@ -233,8 +232,9 @@ const acceptAndGoBack = () => {
 <style scoped>
 .terms-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 5rem 1rem;
+  background: linear-gradient(135deg, #af5e65 0%, #b3a6a6 100%);
+  padding: 1rem 1rem;
+  padding-top: 10rem;
 }
 
 .terms-container {
@@ -247,7 +247,7 @@ const acceptAndGoBack = () => {
 }
 
 .terms-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #141414 0%, #171718 100%);
   color: white;
   padding: 2rem;
   text-align: center;

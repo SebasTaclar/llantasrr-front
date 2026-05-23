@@ -21,8 +21,8 @@
           </article>
 
           <article class="how-card">
-            <h3>ENVÍO GRATIS</h3>
-            <p>A más de 500 destinos en Colombia.</p>
+            <h3>ENVÍO GRATIS POR COMPRA DE MÁS DE DOS ARTICULOS</h3>
+            <p>Envíos a toda Colombia.</p>
           </article>
 
           <article class="how-card">

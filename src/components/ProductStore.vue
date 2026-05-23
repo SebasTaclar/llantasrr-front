@@ -1080,10 +1080,11 @@ const getColorHex = (colorName: string): string => {
 }
 
 .product-card {
-  background: white;
-  border-radius: 20px;
+  background: linear-gradient(180deg, #050505 0%, #111111 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 22px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
   transition: all 0.3s ease;
   position: relative;
   display: flex;
@@ -1094,14 +1095,16 @@ const getColorHex = (colorName: string): string => {
 
 .product-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 20px 46px rgba(0, 0, 0, 0.42);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 
 .product-image {
   position: relative;
-  height: 160px;
+  height: 200px;
   overflow: hidden;
   flex-shrink: 0;
+  background: #000;
 }
 
 .product-image img {
@@ -1143,23 +1146,26 @@ const getColorHex = (colorName: string): string => {
 }
 
 .product-info {
-  padding: 0.5rem 1.5rem;
+  padding: 1rem 1.25rem 1.25rem;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  background: #050505;
 }
 
 .product-name {
-  font-size: 1.2rem;
+  font-size: 1.05rem;
   font-weight: 700;
-  margin: 0 0 0.4rem 0;
-  color: var(--brand-primary);
+  line-height: 1.25;
+  margin: 0 0 0.6rem 0;
+  color: #f5f5f5;
+  text-transform: uppercase;
 }
 
 .product-description {
-  color: #666;
-  margin-bottom: 0.8rem;
-  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 1rem;
+  font-size: 0.88rem;
 }
 
 .product-description p {
@@ -1247,18 +1253,20 @@ const getColorHex = (colorName: string): string => {
   display: flex;
   align-items: center;
   gap: 0.8rem;
+  justify-content: space-between;
+  margin-top: auto;
 }
 
 .current-price {
-  font-size: 1.3rem;
+  font-size: 1.45rem;
   font-weight: 700;
-  color: var(--brand-success);
+  color: #ff3b30;
 }
 
 .original-price {
   font-size: 1.1rem;
   text-decoration: line-through;
-  color: #999;
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .product-colors-inline {
@@ -1283,31 +1291,32 @@ const getColorHex = (colorName: string): string => {
 
 .status-badge {
   display: inline-block;
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
   font-size: 0.8rem;
   font-weight: 600;
   text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .status-available {
-  background-color: #d1fae5;
-  color: #065f46;
+  background-color: rgba(255, 59, 48, 0.14);
+  color: #ffd6d2;
 }
 
 .status-coming-soon {
-  background-color: #fef3c7;
-  color: #92400e;
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #f5f5f5;
 }
 
 .status-out-of-stock {
-  background-color: #fee2e2;
-  color: #991b1b;
+  background-color: rgba(127, 29, 29, 0.35);
+  color: #fff1f1;
 }
 
 .status-unavailable {
-  background-color: #f3f4f6;
-  color: #6b7280;
+  background-color: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.55);
 }
 
 /* Controles del carrito */

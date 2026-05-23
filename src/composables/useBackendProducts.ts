@@ -63,6 +63,12 @@ function normalizeProduct(input: unknown): Product {
     const showcaseImage = anyProduct.showcaseImage !== null && anyProduct.showcaseImage !== undefined
       ? String(anyProduct.showcaseImage)
       : undefined
+    const tireMeasure = anyProduct.tireMeasure !== null && anyProduct.tireMeasure !== undefined
+      ? String(anyProduct.tireMeasure)
+      : undefined
+    const tireRim = anyProduct.tireRim !== null && anyProduct.tireRim !== undefined
+      ? String(anyProduct.tireRim)
+      : undefined
 
     const createdAtRaw = anyProduct.createdAt
     const updatedAtRaw = anyProduct.updatedAt
@@ -77,6 +83,8 @@ function normalizeProduct(input: unknown): Product {
       category,
       status,
       colors,
+      tireMeasure,
+      tireRim,
       isShowcase,
       showcaseImage,
       createdAt: createdAtRaw ? new Date(String(createdAtRaw)) : new Date(),
@@ -93,6 +101,8 @@ function normalizeProduct(input: unknown): Product {
     images: [],
     category: '',
     status: 'available',
+    tireMeasure: undefined,
+    tireRim: undefined,
     createdAt: new Date()
   }
 }

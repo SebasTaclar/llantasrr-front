@@ -17,7 +17,7 @@
         <div class="hero-left" :class="{ 'is-visible': textVisible }">
           <div class="hero-topbar" role="status" aria-live="polite">
             <svg class="truck-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="1" y="3" width="15" height="13" rx="2"></rect><path d="M16 8h5l2 3v5"></path><circle cx="5.5" cy="18.5" r="1.5"></circle><circle cx="18.5" cy="18.5" r="1.5"></circle></svg>
-            <div class="badge-text"><strong>Envíos gratis desde $150.000</strong><span class="badge-sub"> · Entrega 24-48h</span></div>
+            <div class="badge-text"><strong>Envíos gratis por compra de más de dos artículos</strong><span class="badge-sub"> · Entrega 24-48h</span></div>
           </div>
 
           <h1 class="hero-title">Encuentra la llanta perfecta para tu vehículo</h1>
@@ -78,7 +78,7 @@ const bgSlides = ref([
   { id: 'b2', url: 'https://st4.depositphotos.com/4312111/26583/i/450/depositphotos_265836848-stock-photo-banner-for-car-wheel-business.jpg' },
   { id: 'b3', url: 'https://img.freepik.com/fotos-premium/foto-primer-plano-rueda-coche-estudio-fondo-negro_37416-771.jpg' },
   { id: 'b4', url: 'https://autorinesyllantas.co/img/banner-llantas-pirelli.jpg' },
-  { id: 'b5', url: 'https://gutierrezpneus.com.br/wp-content/uploads/banner_principal_imagem_site.jpg' },
+  {id: 'b5', url: 'https://res.cloudinary.com/dlwzazojt/image/upload/q_auto/f_auto/v1779466200/automovil_x1hom2.png' },
 ])
 
 const bgIndex = ref(0)
