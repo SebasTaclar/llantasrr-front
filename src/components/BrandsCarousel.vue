@@ -33,6 +33,7 @@ const brands = ref([
   { name: 'Continental', logo: 'https://1000marcas.net/wp-content/uploads/2022/12/Continental-Logo.png' },
   { name: 'Goodyear', logo: 'https://tullanta.com//files/marcas/GOODYEAR.png' },
   { name: 'Hankook', logo: 'https://1000marcas.net/wp-content/uploads/2020/10/Hankook-logo.png' },
+  { name: 'Toyo Tires', logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3ZWWuHw4ztm3bguef0YZet58sHG3Bpe7dwg&s' },
   { name: 'Dunlop', logo: 'https://1000marcas.net/wp-content/uploads/2020/03/Dunlop-Logo-1.png' },
   { name: 'Kenda', logo: 'https://marvel-b1-cdn.bc0a.com/f00000000270535/s19532.pcdn.co/wp-content/uploads/2023/06/Kenda-1400-1000x500.jpg' }
 ])

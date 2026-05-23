@@ -36,6 +36,20 @@
             <span>Iniciar Sesión</span>
           </RouterLink>
 
+          <div v-else class="nav-controls desktop-controls">
+            <div class="user-greeting">
+              Hola, {{ username }}
+            </div>
+
+            <RouterLink v-if="isAdmin" class="btn admin-btn" to="/admin/products" aria-label="Ir al panel de administración">
+              ⚙️ Panel Admin
+            </RouterLink>
+
+            <button class="btn logout-btn" type="button" @click="logout">
+              Cerrar sesión
+            </button>
+          </div>
+
           <!-- Botón de búsqueda: usar la misma lupa del escritorio (visible sólo en móvil) -->
           <button class="search-btn mobile-search-btn" @click="openMobileSearch" aria-label="Buscar" type="button">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="6"/><path d="m21 21-4.35-4.35"/></svg>
@@ -66,14 +80,11 @@
       <!-- Barra de categorías (ubicada en header) -->
       <div class="categorybar">
         <div class="nav-menu">
-          <RouterLink to="/maintenance" class="nav-link">Auto</RouterLink>
-          <RouterLink to="/maintenance" class="nav-link">Camioneta</RouterLink>
-          <RouterLink to="/maintenance" class="nav-link">Camión</RouterLink>
-          <RouterLink to="/maintenance" class="nav-link">Camión LV</RouterLink>
+          <RouterLink to="/automovil" class="nav-link">Automóvil</RouterLink>
+          <RouterLink to="/maintenance" class="nav-link">Camioneta / SUV</RouterLink>
+          <RouterLink to="/maintenance" class="nav-link">Camión / Bus</RouterLink>
           <RouterLink to="/maintenance" class="nav-link">Moto</RouterLink>
-          <RouterLink to="/maintenance" class="nav-link">ATV/UTV</RouterLink>
-          <RouterLink to="/maintenance" class="nav-link">OTR</RouterLink>
-          <RouterLink to="/maintenance" class="nav-link">Agro</RouterLink>
+          <RouterLink to="/maintenance" class="nav-link">Agrícola</RouterLink>
           <RouterLink to="/maintenance" class="nav-link">Montacarga</RouterLink>
           <RouterLink to="/" class="nav-link offers" @click.prevent="goToPromotions">OFERTAS</RouterLink>
         </div>
@@ -91,11 +102,20 @@
         <div class="mobile-menu-content">
           <div class="mobile-nav-links">
             <RouterLink to="/" class="mobile-link" :class="{ active: isCurrentRoute('/') }" @click="closeMobileMenu">Inicio</RouterLink>
-            <RouterLink to="/maintenance" class="mobile-link" @click="closeMobileMenu">Llantas Moto</RouterLink>
-            <RouterLink to="/maintenance" class="mobile-link" @click="closeMobileMenu">Llantas Carro</RouterLink>
-            <RouterLink to="/maintenance" class="mobile-link" @click="closeMobileMenu">Buscar por vehículo</RouterLink>
-            <RouterLink to="/" class="mobile-link" @click="closeMobileMenu">Ofertas</RouterLink>
-            <RouterLink to="/" class="mobile-link" @click.prevent="() => { closeMobileMenu(); scrollToContact(); }">Contacto</RouterLink>
+          </div>
+
+          <!-- Categorías (visibles en móvil) -->
+          <div class="mobile-categories">
+            <h4 class="mobile-categories-title">Categorías</h4>
+            <div class="mobile-categories-list">
+              <RouterLink to="/automovil" class="mobile-link" @click="closeMobileMenu">Automóvil</RouterLink>
+              <RouterLink to="/maintenance" class="mobile-link" @click="closeMobileMenu">Camioneta / SUV</RouterLink>
+              <RouterLink to="/maintenance" class="mobile-link" @click="closeMobileMenu">Camión / Bus</RouterLink>
+              <RouterLink to="/maintenance" class="mobile-link" @click="closeMobileMenu">Moto</RouterLink>
+              <RouterLink to="/maintenance" class="mobile-link" @click="closeMobileMenu">Agrícola</RouterLink>
+              <RouterLink to="/maintenance" class="mobile-link" @click="closeMobileMenu">Montacarga</RouterLink>
+              <RouterLink to="/" class="mobile-link offers" @click.prevent="() => { closeMobileMenu(); goToPromotions(); }">OFERTAS</RouterLink>
+            </div>
           </div>
 
           <div class="mobile-controls">
@@ -217,7 +237,7 @@ const performInPageSearch = (q: string) => {
     if (firstMark) {
       try {
         (firstMark as HTMLElement).scrollIntoView({ behavior: 'smooth', block: 'center' })
-      } catch (e) {
+      } catch {
         // ignore
       }
     }
@@ -466,8 +486,37 @@ watch(route, () => {
 .search-btn { background:#111827; color:#fff; border:none; padding:8px 10px; border-radius:999px; display:inline-flex; align-items:center; justify-content:center }
 
 .top-right { display:flex; align-items:center; gap:12px }
-.login-link { color:#111827; text-decoration:none; font-weight:600; display:inline-flex; align-items:center; gap:8px }
-.login-link .icon-lock { stroke:#111827 }
+.login-link {
+  color:#111827;
+  text-decoration:none;
+  font-weight:700;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:44px;
+  padding:0 16px;
+  border-radius:999px;
+  border:1px solid rgba(220, 38, 38, 0.18);
+  background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,248,248,0.98) 100%);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.login-link:hover {
+  transform: translateY(-1px);
+  border-color: rgba(220, 38, 38, 0.32);
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.1);
+}
+.login-link .icon-lock { stroke:#dc2626 }
+.desktop-controls {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  padding:8px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+  backdrop-filter: blur(12px);
+}
 .btn-register { background:#ef2330; color:#fff; padding:8px 14px; border-radius:8px; text-decoration:none; font-weight:700 }
 
 .cart-btn { display:flex; align-items:center; gap:8px; cursor:pointer }
@@ -499,6 +548,7 @@ watch(route, () => {
 
 @media (max-width: 900px) {
   .top-center { display:none }
+  .desktop-controls { display:none }
   .nav-menu { overflow-x:auto; padding:8px 12px; gap:12px }
   .hamburger-menu { display:flex }
 }
@@ -741,30 +791,31 @@ watch(route, () => {
 }
 
 .logout-btn {
-  background: rgba(248, 113, 113, 0.1);
-  color: #f87171;
-  border: 1px solid rgba(248, 113, 113, 0.3);
+  background: linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255, 236, 236, 0.96) 100%);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.2);
 }
 
 .logout-btn:hover {
-  background: rgba(248, 113, 113, 0.2);
-  border-color: rgba(248, 113, 113, 0.5);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: #ffffff;
+  border-color: rgba(220, 38, 38, 0.45);
+  transform: translateY(-2px);
 }
 
 .admin-btn {
-  background: linear-gradient(135deg, var(--black) 0%, #1a1a1a 100%);
-  color: var(--primary-red);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(220, 38, 38, 0.3);
-  font-weight: 700;
+  background: linear-gradient(135deg, #111111 0%, #1f1f1f 100%);
+  color: #ffffff;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  font-weight: 800;
 }
 
 .admin-btn:hover {
-  background: linear-gradient(135deg, #1a1a1a 0%, var(--black) 100%);
-  box-shadow: 0 6px 24px rgba(220, 38, 38, 0.4);
-  transform: translateY(-3px);
-  border-color: var(--primary-red);
+  background: linear-gradient(135deg, #0a0a0a 0%, #111111 100%);
+  box-shadow: 0 14px 28px rgba(220, 38, 38, 0.22);
+  transform: translateY(-2px);
+  border-color: rgba(220, 38, 38, 0.55);
 }
 
 .purchases-btn {
@@ -781,15 +832,18 @@ watch(route, () => {
 }
 
 .user-greeting {
-  color: var(--white);
-  font-weight: 700;
+  color: #111827;
+  font-weight: 800;
   font-size: 14px;
-  padding: 10px 16px;
-  background: rgba(220, 38, 38, 0.15);
-  border-radius: 12px;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(220, 38, 38, 0.3);
-  letter-spacing: 0.3px;
+  padding: 0 16px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.12) 0%, rgba(255, 255, 255, 0.96) 100%);
+  border: 1px solid rgba(220, 38, 38, 0.18);
+  letter-spacing: 0.2px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
 }
 
 /* Menu hamburguesa */
@@ -858,6 +912,23 @@ watch(route, () => {
   flex-direction: column;
   gap: 15px;
 }
+
+.mobile-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mobile-categories-title {
+  color: #f1f5f9;
+  font-size: 14px;
+  font-weight: 800;
+  margin: 0 0 6px;
+  text-align: center;
+}
+
+.mobile-categories-list { display:flex; flex-direction:column; gap:10px }
+.mobile-categories-list .mobile-link { padding: 12px 16px; font-size: 16px }
 
 .mobile-link {
   color: #e2e8f0;
@@ -1092,8 +1163,8 @@ watch(route, () => {
 
 @keyframes fadeIn {
   from {
-    opacity: 0;
-    transform: scaleX(0.5);
+    padding: 0 18px;
+    border-radius: 999px;
   }
   to {
     opacity: 1;
@@ -1103,6 +1174,9 @@ watch(route, () => {
 
 .link-navbar:hover {
   text-decoration: none !important;
+    min-height: 44px;
+    white-space: nowrap;
+    line-height: 1;
 }
 </style>
 

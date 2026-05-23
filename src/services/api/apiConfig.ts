@@ -2,7 +2,7 @@
 export const API_CONFIG = {
   baseURL: import.meta.env.DEV
     ? 'http://localhost:7071/api/v1'
-    : 'https://red-wave-0e026e310.1.azurestaticapps.net/api/v1',
+    : 'https://llantasrr-back-fcetbqhwb7g5gfe2.centralus-01.azurewebsites.net/api/v1',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',

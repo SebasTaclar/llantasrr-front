@@ -124,7 +124,7 @@
 
             <div class="instagram-link-container">
               <p class="instagram-text">
-                <a href="https://www.instagram.com/appsstorepro" target="_blank" class="instagram-link" rel="noopener noreferrer">
+                <a href="https://www.instagram.com/p/DTLUwT5kbBK/" target="_blank" class="instagram-link" rel="noopener noreferrer">
                   📱 Síguenos en nuestro Instagram para estar atentos de más novedades
                 </a>
               </p>
@@ -240,7 +240,8 @@
                   <p class="location-address">Cl. 60g Sur #18b - 6 Bogotá D.C.</p>
 
                   <h4>⏰ Horarios de Atención</h4>
-                  <p>Lunes - Sábado: 9:30 AM - 7:00 PM</p>
+                  <p>Lunes - Viernes: 8:00 AM - 6:00 PM</p>
+                  <p>Sábados: 8:00 AM - 3:00 PM</p>
                   <p>Domingos: Cerrado</p>
                 </div>
               </div>

@@ -18,15 +18,15 @@
              <!-- Redes sociales oficiales (iconos desde CDN) arriba de la descripción -->
             <div class="social-inline" aria-label="Redes sociales">
 
-              <a class="social-icon" href="https://www.instagram.com/llantasrr/" target="_blank" rel="noopener" aria-label="Instagram">
+              <a class="social-icon" href="https://www.instagram.com/p/DTLUwT5kbBK/" target="_blank" rel="noopener" aria-label="Instagram">
                 <img src="https://cdn.simpleicons.org/instagram/E4405F" alt="Instagram" />
               </a>
-              <a class="social-icon" href="https://www.facebook.com/llantasrr" target="_blank" rel="noopener" aria-label="Facebook">
+              <!-- <a class="social-icon" href="https://www.facebook.com/llantasrr" target="_blank" rel="noopener" aria-label="Facebook">
                 <img src="https://cdn.simpleicons.org/facebook/1877F2" alt="Facebook" />
               </a>
               <a class="social-icon" href="https://www.youtube.com/" target="_blank" rel="noopener" aria-label="YouTube">
                 <img src="https://cdn.simpleicons.org/youtube/FF0000" alt="YouTube" />
-              </a>
+              </a> -->
             </div>
           </div>
 
@@ -63,23 +63,22 @@
           <div class="footer-column nav-col">
             <h3 class="footer-title-img">Navegación</h3>
             <ul class="footer-links yellow-bullets">
-              <li><a href="/">Inicio</a></li>
-              <li><a href="/blog">Blog</a></li>
-              <li><a href="/quienes-somos">Quiénes somos</a></li>
-              <li><a href="/contacto">Contáctenos</a></li>
+              <li><a href="/#">Inicio</a></li>
+              <li><a href="/#quienes-somos" @click.prevent="scrollToContact">Quiénes somos</a></li>
+              <li><a href="/#contactenos" @click.prevent="scrollToContact">Contáctenos</a></li>
             </ul>
           </div>
 
           <!-- Productos y Servicios -->
-          <div class="footer-column prodserv-col">
-            <h3 class="footer-title-img">Productos y Servicios</h3>
-            <ul class="footer-links yellow-bullets">
-              <li><a href="/venta-llantas">Venta de llantas</a></li>
-              <li><a href="/insumos-montallantas">Insumos para montallantas</a></li>
-              <li><a href="/reparacion-llantas">Reparación de llantas</a></li>
-              <li><a href="/reencauche-llantas">Reencauche de llantas</a></li>
-            </ul>
-          </div>
+            <div class="footer-column prodserv-col">
+              <h3 class="footer-title-img">Productos y Servicios</h3>
+              <ul class="footer-links yellow-bullets">
+                <li><a href="#" @click.prevent="scrollToCategory">Venta de llantas</a></li>
+                <li><a href="#" @click.prevent="scrollToCategory">Cambio de llantas</a></li>
+                <li><a href="#" @click.prevent="scrollToCategory">Instalación de llantas</a></li>
+                <li><a href="#" @click.prevent="scrollToCategory">Alineación y balanceo</a></li>
+              </ul>
+            </div>
         </div>
       </div>
     </div>
@@ -87,11 +86,79 @@
     <!-- Barra inferior -->
     <div class="footer-bottom">
       <div class="footer-container">
-        <p class="copyright">&copy; 2026 CASA COMERCIAL DE LA LLANTA RR. Todos los derechos reservados. | Desarrollado por <a class="developer-link" href="https://www.example.com" target="_blank" rel="noopener">DataOr</a></p>
+        <p class="copyright">&copy; 2026 CASA COMERCIAL DE LA LLANTA RR. Todos los derechos reservados. | Desarrollado por <a class="developer-link" href="https://www.dataor.org" target="_blank" rel="noopener">DataOr</a></p>
       </div>
     </div>
   </footer>
  </template>
+
+<script setup lang="ts">
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const scrollToContact = () => {
+  // Intentar varios selectores conocidos para la sección de contacto
+  const selectors = ['.contact-section', '.contact-section-bg', '#contact', '.contact-section-container']
+  let target: HTMLElement | null = null
+  for (const sel of selectors) {
+    const found = document.querySelector(sel) as HTMLElement | null
+    if (found) { target = found; break }
+  }
+
+  const doScroll = (el: HTMLElement) => {
+    // compensar header fijo si existe
+    const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--navbar-height')) || 76
+    const top = el.getBoundingClientRect().top + window.pageYOffset - navH - 8
+    window.scrollTo({ top, behavior: 'smooth' })
+  }
+
+  if (target) {
+    doScroll(target)
+    return
+  }
+
+  // Si no hay objetivo en el DOM, navegar a home y reintentar después
+  router.push('/').then(() => {
+    setTimeout(() => {
+      let t: HTMLElement | null = null
+      for (const sel of selectors) {
+        const f = document.querySelector(sel) as HTMLElement | null
+        if (f) { t = f; break }
+      }
+      if (t) doScroll(t)
+    }, 300)
+  })
+}
+
+const scrollToCategory = () => {
+  const selectors = ['.category-section', '#categories', '.categories', '.category-section-bg']
+  let target: HTMLElement | null = null
+  for (const sel of selectors) {
+    const found = document.querySelector(sel) as HTMLElement | null
+    if (found) { target = found; break }
+  }
+
+  const doScroll = (el: HTMLElement) => {
+    const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--navbar-height')) || 76
+    const top = el.getBoundingClientRect().top + window.pageYOffset - navH - 8
+    window.scrollTo({ top, behavior: 'smooth' })
+  }
+
+  if (target) { doScroll(target); return }
+
+  router.push('/').then(() => {
+    setTimeout(() => {
+      let t: HTMLElement | null = null
+      for (const sel of selectors) {
+        const f = document.querySelector(sel) as HTMLElement | null
+        if (f) { t = f; break }
+      }
+      if (t) doScroll(t)
+    }, 300)
+  })
+}
+</script>
 
 <style scoped>
 /* Footer moderno con grid de 4 columnas */

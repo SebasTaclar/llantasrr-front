@@ -336,7 +336,6 @@ textarea::placeholder {
   .modal-content {
     width: 100% !important;
     max-width: 100% !important;
-    height: 100vh !important;
     max-height: none !important;
     border-radius: 0 !important;
     padding: 1rem !important;

@@ -96,6 +96,7 @@ const clearCustomValidityMessage = (event: Event) => {
   min-height: 100vh;
   width: 100%;
   padding: 8rem;
+  padding-top: 10rem;
   background: var(--bg-gradient-primary);
   position: relative;
   transition: all 0.3s ease;
@@ -140,7 +141,7 @@ const clearCustomValidityMessage = (event: Event) => {
 }
 
 .login-container {
-  background: var(--bg-secondary);
+  background:#302e2e;
   backdrop-filter: var(--backdrop-blur);
   border-radius: 20px;
   padding: 3rem;
@@ -161,7 +162,7 @@ const clearCustomValidityMessage = (event: Event) => {
 .login-header h1 {
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color:aliceblue;
   margin: 0 0 0.5rem 0;
   text-shadow: 0 2px 4px var(--shadow-primary);
   font-family: var(--font-primary);
@@ -169,7 +170,7 @@ const clearCustomValidityMessage = (event: Event) => {
 
 .login-header h2 {
   font-size: 1.1rem;
-  color: var(--text-secondary);
+  color: aliceblue;
   margin: 0;
   font-weight: 400;
   opacity: 0.9;
@@ -190,7 +191,7 @@ const clearCustomValidityMessage = (event: Event) => {
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: aliceblue;
   font-size: 0.95rem;
   font-family: var(--font-primary);
 }
@@ -198,7 +199,7 @@ const clearCustomValidityMessage = (event: Event) => {
 .form-input {
   width: 100%;
   padding: 16px 20px;
-  background: var(--bg-tertiary);
+  background: aliceblue;
   border: 2px solid var(--border-primary);
   border-radius: 12px;
   color: var(--text-primary);

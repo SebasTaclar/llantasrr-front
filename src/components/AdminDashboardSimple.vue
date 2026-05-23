@@ -62,7 +62,7 @@
       <div v-if="activeTab === 'products'" class="content-section">
         <div class="section-header">
           <h2>Gestión de Productos</h2>
-          <button class="btn btn-primary" @click="showProductForm = true">
+          <button class="btn btn-primary" @click="openProductForm()">
             <span class="btn-icon">➕</span>
             Nuevo Producto
           </button>
@@ -83,6 +83,14 @@
             />
             <button v-if="searchProducts" class="search-clear" @click.prevent="searchProducts = ''" aria-label="Limpiar búsqueda">X</button>
           </div>
+
+          <!-- Selector por categoría para productos -->
+          <div class="category-filter-wrapper">
+            <select v-model="selectedProductCategory" class="form-input category-select" aria-label="Filtrar por categoría">
+              <option value="">Todas las categorías</option>
+              <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+            </select>
+          </div>
         </div>
 
         <!-- Lista de productos -->
@@ -91,14 +99,37 @@
             <div class="product-image">
               <img v-if="product.images && product.images.length > 0" :src="product.images[0]" :alt="product.name" />
               <div v-else class="no-image">📷</div>
+              <span :class="['status-badge', product.status]">{{ getStatusText(product.status) }}</span>
+              <span v-if="product.originalPrice && product.originalPrice > product.price" class="discount-badge">
+                -{{ getDiscountPercent(product) }}%
+              </span>
             </div>
             <div class="product-info">
+              <p class="product-category">Automóvil</p>
               <h3>{{ product.name }}</h3>
-              <p class="product-description">{{ product.description }}</p>
-              <div class="product-meta">
-                <span class="price">${{ product.price.toLocaleString() }}</span>
-                <span :class="['status', product.status]">{{ getStatusText(product.status) }}</span>
+              <p class="product-brand">{{ getProductBrand(product) }}</p>
+
+              <div class="tech-row">
+                <div class="tech-item">
+                  <span class="tech-label">Medida</span>
+                  <span class="tech-value">{{ getProductMeasure(product) }}</span>
+                </div>
+
+                <div class="tech-divider"></div>
+
+                <div class="tech-item">
+                  <span class="tech-label">Rin</span>
+                  <span class="tech-value tech-rim">{{ getProductRim(product) }}</span>
+                </div>
               </div>
+
+              <div class="price-block price-block-centered">
+                <span class="current-price">${{ product.price.toLocaleString() }} COP</span>
+                <span v-if="product.originalPrice && product.originalPrice > product.price" class="original-price">
+                  ${{ product.originalPrice.toLocaleString() }} COP
+                </span>
+              </div>
+
               <div class="product-actions">
                 <button class="btn btn-sm btn-secondary" @click="editProduct(product)">✏️ Editar</button>
                 <button class="btn btn-sm btn-danger" @click="deleteProductConfirm(product.id)">🗑️ Eliminar</button>
@@ -112,7 +143,7 @@
           <div class="empty-icon">📦</div>
           <h3>No hay productos</h3>
           <p>Comienza agregando tu primer producto</p>
-          <button class="btn btn-primary" @click="showProductForm = true">
+          <button class="btn btn-primary" @click="openProductForm()">
             Crear Primer Producto
           </button>
         </div>
@@ -211,6 +242,14 @@
               class="search-input"
             />
             <button v-if="searchShowcase" class="search-clear" @click.prevent="searchShowcase = ''" aria-label="Limpiar búsqueda">X</button>
+          </div>
+
+          <!-- Selector por categoría para novedades -->
+          <div class="category-filter-wrapper">
+            <select v-model="selectedShowcaseCategory" class="form-input category-select" aria-label="Filtrar novedades por categoría">
+              <option value="">Todas las categorías</option>
+              <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+            </select>
           </div>
         </div>
 
@@ -425,8 +464,13 @@
             </div>
 
             <div class="form-group">
-              <label>Descripción</label>
-              <textarea v-model="productForm.description" class="form-input" rows="3" placeholder="Describe las características principales del producto"></textarea>
+              <label>Marca *</label>
+              <select v-model="productForm.description" class="form-input" required>
+                <option value="">Seleccionar marca</option>
+                <option v-for="brand in brandOptions" :key="brand" :value="brand">
+                  {{ brand }}
+                </option>
+              </select>
             </div>
 
             <div class="form-row">
@@ -466,27 +510,19 @@
               </div>
             </div>
 
-            <!-- Selector de Colores -->
+            <!-- Medida de la llanta -->
             <div class="form-group">
-              <label>Colores Disponibles</label>
-              <div class="colors-selector">
-                <div class="colors-grid">
-                  <div
-                    v-for="color in appleColors"
-                    :key="color.name"
-                    class="color-option"
-                    :class="{ selected: isColorSelected(color.name) }"
-                    @click="toggleProductColor(color.name)"
-                  >
-                    <div class="color-circle" :style="{ background: color.hex }">
-                      <span v-if="isColorSelected(color.name)" class="check-icon">✓</span>
-                    </div>
-                    <span class="color-name">{{ color.name }}</span>
-                  </div>
-                </div>
-                <div v-if="productForm.colors.length > 0" class="selected-colors">
-                  <span class="selected-label">Seleccionados: </span>
-                  <span class="selected-list">{{ productForm.colors.join(', ') }}</span>
+              <label>Medida de la Llanta *</label>
+              <div class="tire-size-field">
+                <input
+                  v-model="productForm.tireMeasure"
+                  type="text"
+                  class="form-input"
+                  required
+                  placeholder="Ej: 205/55R16"
+                />
+                <div v-if="detectedRimLabel" class="tire-size-hint">
+                  {{ detectedRimLabel }}
                 </div>
               </div>
             </div>
@@ -495,91 +531,38 @@
             <div class="form-group">
               <label>Imagen del Producto *</label>
 
-              <!-- Tabs para elegir método de imagen -->
-              <div class="image-tabs">
-                <button
-                  type="button"
-                  class="tab-btn"
-                  :class="{ active: productImageUploadMethod === 'url' }"
-                  @click="productImageUploadMethod = 'url'"
-                >
-                  URL de Imagen
-                </button>
-                <button
-                  type="button"
-                  class="tab-btn"
-                  :class="{ active: productImageUploadMethod === 'file' }"
-                  @click="productImageUploadMethod = 'file'"
-                >
-                  Subir Archivo
-                </button>
-              </div>
-
-              <!-- Campo URL -->
-              <div v-if="productImageUploadMethod === 'url'" class="image-input-section">
-                <input
-                  :value="productForm.images[0] || ''"
-                  @input="(e) => { productForm.images = [(e.target as HTMLInputElement).value]; updateImagePreview(); }"
-                  type="url"
-                  class="form-input"
-                  required
-                  placeholder="https://ejemplo.com/imagen.jpg"
-                />
-              </div>
-
-              <!-- Campo de archivo -->
-              <div v-if="productImageUploadMethod === 'file'" class="image-input-section">
-                <input
-                  ref="fileInput"
-                  type="file"
-                  class="file-input"
-                  accept="image/*"
-                  multiple
-                  @change="handleMultipleFileSelect"
-                />
-                <div class="file-upload-area" @click="fileInput?.click()">
-                  <div v-if="productForm.images.length === 0" class="upload-placeholder">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                      <circle cx="9" cy="9" r="2"/>
-                      <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
-                    </svg>
-                    <p>Haz clic para seleccionar imágenes</p>
-                    <span>JPG, PNG, GIF hasta 5MB (máximo 5 imágenes)</span>
+              <!-- Campo URL: múltiples URLs con previews -->
+              <div class="image-input-section">
+                <div class="url-rows">
+                  <div v-for="(url, i) in productForm.images" :key="i" class="url-row">
+                    <input
+                      type="url"
+                      class="form-input"
+                      :placeholder="`https://ejemplo.com/imagen-${i + 1}.jpg`"
+                      :value="url"
+                      @input="(e) => { productForm.images[i] = (e.target as HTMLInputElement).value; updateImagePreview(); }"
+                    />
+                    <button type="button" class="remove-url" @click="removeSingleImage(i)" aria-label="Eliminar URL">✕</button>
                   </div>
-                  <div v-if="productForm.images.length > 0" class="images-preview-grid">
-                    <div
-                      v-for="(image, index) in productForm.images"
-                      :key="index"
-                      class="image-preview-item"
-                    >
-                      <img :src="image" :alt="`Preview ${index + 1}`" />
+                </div>
+                <div class="add-url-row">
+                  <button type="button" class="btn btn-secondary" @click="addImageUrlRow">+ Agregar otra URL</button>
+                </div>
+
+                <div v-if="visibleProductImages.length > 0" class="images-preview-grid">
+                  <div v-for="(image, idx) in visibleProductImages" :key="`${image}-${idx}`" class="image-preview-item">
+                    <img :src="image" :alt="`Preview ${idx + 1}`" />
+                    <button type="button" class="remove-single-image" @click.stop="removeSingleImageByVisibleIndex(idx)">✕</button>
+                    <span class="image-index">{{ idx + 1 }}</span>
+                    <div class="image-actions">
                       <button
                         type="button"
-                        class="remove-single-image"
-                        @click.stop="removeSingleImage(index)"
-                      >
-                        ✕
-                      </button>
-                      <span class="image-index">{{ index + 1 }}</span>
-                      <div class="image-actions">
-                        <button
-                          type="button"
-                          class="img-action-btn"
-                          :disabled="index === 0"
-                          @click.stop="moveImageLeft(index)"
-                          title="Mover a la izquierda"
-                        >←</button>
-                        <button
-                          type="button"
-                          class="img-action-btn"
-                          :disabled="index === productForm.images.length - 1"
-                          @click.stop="moveImageRight(index)"
-                          title="Mover a la derecha"
-                        >→</button>
-                        <!-- Botón Portada removido temporalmente -->
-                      </div>
+                        class="img-action-btn"
+                        @click.stop="setPrimaryImageByVisibleIndex(idx)"
+                        title="Hacer principal"
+                      >Hacer principal</button>
                     </div>
+                    <span v-if="idx === 0" class="principal-badge">Principal</span>
                   </div>
                 </div>
               </div>
@@ -639,11 +622,11 @@
         <div class="modal-body">
           <form @submit.prevent="saveShowcaseProduct">
             <div class="form-group">
-              <label>Nombre del Producto *</label>
+              <label>Nombre de la novedad *</label>
               <input v-model="showcaseForm.name" type="text" class="form-input" required />
             </div>
             <div class="form-group">
-              <label>Descripción *</label>
+              <label>Descripción de la novedad*</label>
               <textarea v-model="showcaseForm.description" class="form-input" rows="3" required></textarea>
             </div>
             <!-- Campo de precio oculto - siempre será 0 para novedades -->
@@ -654,59 +637,38 @@
             <div class="form-group">
               <label>Imagen del Producto *</label>
 
-              <!-- Tabs para elegir método de imagen -->
-              <div class="image-tabs">
-                <button
-                  type="button"
-                  class="tab-btn"
-                  :class="{ active: imageUploadMethod === 'url' }"
-                  @click="imageUploadMethod = 'url'"
-                >
-                  URL de Imagen
-                </button>
-                <button
-                  type="button"
-                  class="tab-btn"
-                  :class="{ active: imageUploadMethod === 'file' }"
-                  @click="imageUploadMethod = 'file'"
-                >
-                  Subir Archivo
-                </button>
-              </div>
-
-              <!-- Campo URL -->
-              <div v-if="imageUploadMethod === 'url'" class="image-input-section">
-                <input
-                  v-model="showcaseForm.image"
-                  type="url"
-                  class="form-input"
-                  required
-                  placeholder="https://ejemplo.com/imagen.jpg"
-                />
-              </div>
-
-              <!-- Campo de archivo -->
-              <div v-if="imageUploadMethod === 'file'" class="image-input-section">
-                <input
-                  ref="showcaseFileInput"
-                  type="file"
-                  class="file-input"
-                  accept="image/*"
-                  @change="handleShowcaseFileSelect"
-                />
-                <div class="file-upload-area" @click="showcaseFileInput?.click()">
-                  <div v-if="!showcaseImagePreview" class="upload-placeholder">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                      <circle cx="9" cy="9" r="2"/>
-                      <path d="M21 15l-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
-                    </svg>
-                    <p>Haz clic para seleccionar una imagen</p>
-                    <span>JPG, PNG, GIF hasta 5MB</span>
+              <div class="image-input-section">
+                <div class="url-rows">
+                  <div v-for="(url, i) in showcaseForm.images" :key="i" class="url-row">
+                    <input
+                      type="url"
+                      class="form-input"
+                      :placeholder="`https://ejemplo.com/imagen-${i + 1}.jpg`"
+                      :value="url"
+                      @input="(e) => { showcaseForm.images[i] = (e.target as HTMLInputElement).value; updateShowcaseImagePreview(); }"
+                    />
+                    <button type="button" class="remove-url" @click="removeShowcaseImageUrl(i)" aria-label="Eliminar URL">✕</button>
                   </div>
-                  <div v-if="showcaseImagePreview" class="image-preview">
-                    <img :src="showcaseImagePreview" alt="Preview" />
-                    <button type="button" class="remove-image" @click.stop="removeShowcaseImage">✕</button>
+                </div>
+
+                <div class="add-url-row">
+                  <button type="button" class="btn btn-secondary" @click="addShowcaseImageUrlRow">+ Agregar otra URL</button>
+                </div>
+
+                <div v-if="visibleShowcaseImages.length > 0" class="images-preview-grid">
+                  <div v-for="(image, idx) in visibleShowcaseImages" :key="`${image}-${idx}`" class="image-preview-item">
+                    <img :src="image" :alt="`Preview ${idx + 1}`" />
+                    <button type="button" class="remove-single-image" @click.stop="removeShowcaseImageByVisibleIndex(idx)">✕</button>
+                    <span class="image-index">{{ idx + 1 }}</span>
+                    <div class="image-actions">
+                      <button
+                        type="button"
+                        class="img-action-btn"
+                        @click.stop="setPrimaryShowcaseImageByVisibleIndex(idx)"
+                        title="Hacer principal"
+                      >Hacer principal</button>
+                    </div>
+                    <span v-if="idx === 0" class="principal-badge">Principal</span>
                   </div>
                 </div>
               </div>
@@ -768,21 +730,15 @@ const editingProduct = ref<Product | null>(null)
 const editingCategory = ref<Category | null>(null)
 const editingShowcaseProduct = ref<ShowcaseProduct | null>(null)
 const imagePreview = ref('')
-const fileInput = ref<HTMLInputElement | null>(null)
-
-// Variables para product image upload
-const productImageUploadMethod = ref('url')
-
-// Variables para showcase image upload
-const imageUploadMethod = ref('url')
-const showcaseImagePreview = ref('')
-const showcaseFileInput = ref<HTMLInputElement | null>(null)
 
 // Variables para búsqueda
 const searchProducts = ref('')
 const searchCategories = ref('')
 const searchShowcase = ref('')
 const searchSales = ref('')
+// Filtros por categoría (vacío = todas)
+const selectedProductCategory = ref<string>('')
+const selectedShowcaseCategory = ref<string>('')
 
 // Usar el composable de productos
 const {
@@ -910,26 +866,51 @@ const productForm = ref({
   images: [] as string[],
   category: '',
   status: 'available' as 'available' | 'out-of-stock' | 'coming-soon',
-  colors: [] as string[]
+  colors: [] as string[],
+  tireMeasure: ''
 })
 
-// Colores de Apple predeterminados
-const appleColors = ref([
-  { name: 'Naranja Cósmico', hex: '#ff5e00' },
-  { name: 'Azul Profundo', hex: '#003d5c' },
-  { name: 'Plata', hex: '#c0c0c0' },
-  { name: 'Azul', hex: '#1976d2' },
-  { name: 'Negro', hex: '#000000' },
-  { name: 'Blanco', hex: '#ffffff' },
-  { name: 'Azul Neblina', hex: '#a8c7dd' },
-  { name: 'Dorado Claro', hex: '#f7e7a1' },
-  { name: 'Azul Cielo', hex: '#87ceeb' },
-  { name: 'Rosa', hex: '#ff69b4' },
-  { name: 'Amarillo', hex: '#ffeb3b' },
-  { name: 'Verde', hex: '#4caf50' },
-  { name: 'Púrpura', hex: '#9c27b0' },
-  { name: 'Oro', hex: '#ffd700' }
-])
+const visibleProductImages = computed(() =>
+  productForm.value.images.filter((image) => image.trim().length > 0)
+)
+
+const brandOptions = [
+  'Michelin',
+  'Goodyear',
+  'Pirelli',
+  'Bridgestone',
+  'Continental',
+  'Hankook',
+  'Yokohama',
+  'Toyo',
+  'Kumho',
+  'Nexen',
+  'Sailun',
+  'Triangle'
+]
+
+const extractRimLabel = (measure: string) => {
+  const normalizedMeasure = measure.toUpperCase().replace(/\s+/g, '')
+  const match = normalizedMeasure.match(/R(\d{2,3})/)
+  if (!match) return ''
+  return `Rin ${match[1]}`
+}
+
+const detectedRimLabel = computed(() => extractRimLabel(productForm.value.tireMeasure))
+
+const getProductBrand = (product: Product) => product.description || 'Marca no especificada'
+
+const getProductMeasure = (product: Product) => product.colors?.[0] || 'Medida no especificada'
+
+const getProductRim = (product: Product) => {
+  const rimLabel = extractRimLabel(getProductMeasure(product))
+  return rimLabel || '--'
+}
+
+const getDiscountPercent = (product: Product) => {
+  if (!product.originalPrice || product.originalPrice <= product.price) return 0
+  return Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+}
 
 const categoryForm = ref<CreateCategoryRequest>({
   name: '',
@@ -940,9 +921,13 @@ const showcaseForm = ref({
   name: '',
   description: '',
   price: 0,
-  image: '',
+  images: [''] as string[],
   category: ''
 })
+
+const visibleShowcaseImages = computed(() =>
+  showcaseForm.value.images.filter((image) => image.trim().length > 0)
+)
 
 // Estado de guardado de showcase (evita clicks múltiples y sensación de "bloqueo")
 const isSavingShowcase = ref(false)
@@ -952,7 +937,7 @@ const showcaseFormValid = computed(() => {
   return (
     showcaseForm.value.name.trim().length > 0 &&
     showcaseForm.value.description.trim().length > 0 &&
-    showcaseForm.value.image.trim().length > 0 &&
+    showcaseForm.value.images.some((image) => image.trim().length > 0) &&
     showcaseForm.value.category.trim().length > 0
   )
 })
@@ -993,14 +978,23 @@ const totalSalesCount = computed(() => sales.value.length)
 
 // Computed properties para búsqueda y filtrado
 const filteredProducts = computed(() => {
-  if (!searchProducts.value.trim()) {
-    return products.value
+  let items = products.value
+
+  // Filtrar por búsqueda de texto
+  if (searchProducts.value.trim()) {
+    const searchLower = searchProducts.value.toLowerCase().trim()
+    items = items.filter(product =>
+      product.name.toLowerCase().includes(searchLower) ||
+      product.description?.toLowerCase().includes(searchLower)
+    )
   }
-  const searchLower = searchProducts.value.toLowerCase().trim()
-  return products.value.filter(product =>
-    product.name.toLowerCase().includes(searchLower) ||
-    product.description?.toLowerCase().includes(searchLower)
-  )
+
+  // Filtrar por categoría seleccionada (si aplica)
+  if (selectedProductCategory.value && selectedProductCategory.value.trim() !== '') {
+    items = items.filter(p => String(p.category) === String(selectedProductCategory.value))
+  }
+
+  return items
 })
 
 const filteredCategories = computed(() => {
@@ -1015,14 +1009,23 @@ const filteredCategories = computed(() => {
 })
 
 const filteredShowcase = computed(() => {
-  if (!searchShowcase.value.trim()) {
-    return showcaseProducts.value
+  let items = showcaseProducts.value
+
+  // Filtrar por búsqueda de texto
+  if (searchShowcase.value.trim()) {
+    const searchLower = searchShowcase.value.toLowerCase().trim()
+    items = items.filter(product =>
+      product.name.toLowerCase().includes(searchLower) ||
+      product.description?.toLowerCase().includes(searchLower)
+    )
   }
-  const searchLower = searchShowcase.value.toLowerCase().trim()
-  return showcaseProducts.value.filter(product =>
-    product.name.toLowerCase().includes(searchLower) ||
-    product.description?.toLowerCase().includes(searchLower)
-  )
+
+  // Filtrar por categoría seleccionada
+  if (selectedShowcaseCategory.value && selectedShowcaseCategory.value.trim() !== '') {
+    items = items.filter(p => String(p.category) === String(selectedShowcaseCategory.value))
+  }
+
+  return items
 })
 
 const filteredSales = computed(() => {
@@ -1127,18 +1130,20 @@ const editProduct = (product: Product) => {
     images: product.images ? [...product.images] : [],
     category: product.category,
     status: product.status,
-    colors: product.colors ? [...product.colors] : []
+    colors: product.colors ? [...product.colors] : [],
+    tireMeasure: product.colors && product.colors.length > 0 ? product.colors[0] : ''
   }
-  // Configurar preview con la primera imagen si existe
-  if (product.images && product.images.length > 0) {
-    if (product.images[0].startsWith('http')) {
-      productImageUploadMethod.value = 'url'
-    } else {
-      productImageUploadMethod.value = 'file'
-    }
-    imagePreview.value = product.images[0]
-  } else {
-    imagePreview.value = ''
+  productForm.value.images = product.images && product.images.length > 0 ? [...product.images] : ['']
+  imagePreview.value = visibleProductImages.value[0] || ''
+  showProductForm.value = true
+}
+
+const openProductForm = () => {
+  if (productForm.value.images.length === 0) {
+    productForm.value.images = ['']
+  }
+  if (!productForm.value.tireMeasure) {
+    productForm.value.tireMeasure = ''
   }
   showProductForm.value = true
 }
@@ -1182,16 +1187,8 @@ const editShowcaseProduct = (product: ShowcaseProduct) => {
     name: product.name,
     description: product.description,
     price: 5000, // Siempre 0 para novedades
-    image: product.image,
+    images: [product.image],
     category: product.category
-  }
-  // Determinar el método de imagen basado en si es URL o base64
-  if (product.image.startsWith('http')) {
-    imageUploadMethod.value = 'url'
-    showcaseImagePreview.value = ''
-  } else {
-    imageUploadMethod.value = 'file'
-    showcaseImagePreview.value = product.image
   }
   imagePreview.value = product.image
   showShowcaseForm.value = true
@@ -1221,18 +1218,10 @@ const saveShowcaseProduct = async () => {
     // Asegurar que el precio siempre sea 0 para novedades
     showcaseForm.value.price = 5000
 
-    // Validación extra de URL (si se usa modo URL)
-    if (imageUploadMethod.value === 'url' && showcaseForm.value.image.startsWith('http')) {
-      const testImg = new Image()
-      const loadPromise = new Promise<void>((resolve, reject) => {
-        testImg.onload = () => resolve()
-        testImg.onerror = () => reject(new Error('No se pudo cargar la imagen proporcionada.'))
-      })
-      testImg.src = showcaseForm.value.image
-      await Promise.race([
-        loadPromise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('Tiempo de espera al validar la imagen.')), 4000))
-      ])
+    const cleanedImages = showcaseForm.value.images.map((image) => image.trim()).filter((image) => image.length > 0)
+    if (cleanedImages.length === 0) {
+      alert('Agrega al menos una URL de imagen para la novedad.')
+      return
     }
 
     if (editingShowcaseProduct.value) {
@@ -1242,10 +1231,16 @@ const saveShowcaseProduct = async () => {
         isSavingShowcase.value = false
         return
       }
-      await updateShowcaseProduct(editingShowcaseProduct.value.id, showcaseForm.value)
+      await updateShowcaseProduct(editingShowcaseProduct.value.id, {
+        ...showcaseForm.value,
+        image: cleanedImages[0]
+      })
       console.log('✅ Producto showcase actualizado')
     } else {
-      await addShowcaseProduct(showcaseForm.value)
+      await addShowcaseProduct({
+        ...showcaseForm.value,
+        image: cleanedImages[0]
+      })
       console.log('✅ Producto showcase agregado')
     }
     closeShowcaseForm()
@@ -1262,18 +1257,12 @@ const closeShowcaseForm = () => {
   showShowcaseForm.value = false
   editingShowcaseProduct.value = null
   imagePreview.value = ''
-  showcaseImagePreview.value = ''
-  imageUploadMethod.value = 'url'
   showcaseForm.value = {
     name: '',
     description: '',
     price: 0,
-    image: '',
+    images: [''],
     category: ''
-  }
-  // Limpiar input de archivo
-  if (showcaseFileInput.value) {
-    showcaseFileInput.value.value = ''
   }
 }
 
@@ -1281,181 +1270,129 @@ const closeShowcaseForm = () => {
 const isFormValid = computed(() => {
   return productForm.value.name.trim() !== '' &&
          productForm.value.price > 0 &&
-         productForm.value.category !== ''
+         productForm.value.category !== '' &&
+         productForm.value.description.trim() !== '' &&
+         productForm.value.tireMeasure.trim() !== ''
 })
 
-const handleMultipleFileSelect = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  const files = target.files
-  if (files && files.length > 0) {
-    handleMultipleImageFiles(files)
-  }
-}
-
-const handleMultipleImageFiles = (files: FileList) => {
-  const imagePromises: Promise<string>[] = []
-
-  for (let i = 0; i < Math.min(files.length, 5); i++) { // Máximo 5 imágenes
-    const file = files[i]
-
-    // Validar tamaño (5MB máximo)
-    if (file.size > 5 * 1024 * 1024) {
-      alert(`El archivo ${file.name} es demasiado grande. Máximo 5MB.`)
-      continue
-    }
-
-    // Validar tipo
-    if (!file.type.startsWith('image/')) {
-      alert(`${file.name} no es un archivo de imagen válido.`)
-      continue
-    }
-
-    // Crear promesa para leer el archivo
-    const promise = new Promise<string>((resolve) => {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        resolve(e.target?.result as string)
-      }
-      reader.readAsDataURL(file)
-    })
-
-    imagePromises.push(promise)
-  }
-
-  // Procesar todas las imágenes
-  Promise.all(imagePromises).then((base64Images) => {
-    productForm.value.images = base64Images
-    imagePreview.value = base64Images[0] || ''
-  })
-}
-
-
 const updateImagePreview = () => {
-  if (productForm.value.images.length > 0 && productForm.value.images[0].startsWith('http')) {
-    imagePreview.value = productForm.value.images[0]
-  } else {
-    imagePreview.value = ''
-  }
+  imagePreview.value = visibleProductImages.value[0] || ''
 }
 
 // removeImage eliminado (uso sustituido por removeSingleImage o reinicio manual)
 
 const removeSingleImage = (index: number) => {
   productForm.value.images.splice(index, 1)
-  if (productForm.value.images.length > 0) {
-    imagePreview.value = productForm.value.images[0]
-  } else {
-    imagePreview.value = ''
-    if (fileInput.value) {
-      fileInput.value.value = ''
+  if (productForm.value.images.length === 0) {
+    productForm.value.images = ['']
+  }
+  imagePreview.value = visibleProductImages.value[0] || ''
+}
+
+const addImageUrlRow = () => {
+  productForm.value.images.push('')
+}
+
+const getActualImageIndexFromVisibleIndex = (visibleIndex: number) => {
+  let currentVisibleIndex = -1
+
+  for (let actualIndex = 0; actualIndex < productForm.value.images.length; actualIndex++) {
+    if (!productForm.value.images[actualIndex].trim()) continue
+    currentVisibleIndex += 1
+    if (currentVisibleIndex === visibleIndex) {
+      return actualIndex
     }
   }
+
+  return -1
 }
 
-// Reordenar: mover a la izquierda
-const moveImageLeft = (index: number) => {
-  if (index <= 0) return
-  const imgs = productForm.value.images
-  ;[imgs[index - 1], imgs[index]] = [imgs[index], imgs[index - 1]]
-  imagePreview.value = imgs[0] || ''
+const removeSingleImageByVisibleIndex = (visibleIndex: number) => {
+  const actualIndex = getActualImageIndexFromVisibleIndex(visibleIndex)
+  if (actualIndex === -1) return
+  removeSingleImage(actualIndex)
 }
 
-// Reordenar: mover a la derecha
-const moveImageRight = (index: number) => {
+const setPrimaryImageByVisibleIndex = (visibleIndex: number) => {
+  const actualIndex = getActualImageIndexFromVisibleIndex(visibleIndex)
+  if (actualIndex <= 0) return
   const imgs = productForm.value.images
-  if (index >= imgs.length - 1) return
-  ;[imgs[index + 1], imgs[index]] = [imgs[index], imgs[index + 1]]
-  imagePreview.value = imgs[0] || ''
+  const [img] = imgs.splice(actualIndex, 1)
+  imgs.unshift(img)
+  imagePreview.value = visibleProductImages.value[0] || ''
 }
 
 // setAsCover removido (no se usa actualmente)
 
-// Funciones específicas para showcase image upload
-const handleShowcaseFileSelect = (event: Event) => {
-  const target = event.target as HTMLInputElement
-  const file = target.files?.[0]
-  if (file) {
-    handleShowcaseImageFile(file)
-  }
+const updateShowcaseImagePreview = () => {
+  imagePreview.value = visibleShowcaseImages.value[0] || ''
 }
 
-const handleShowcaseImageFile = (file: File) => {
-  // Validar tamaño (5MB máximo)
-  if (file.size > 5 * 1024 * 1024) {
-    alert('El archivo es demasiado grande. Máximo 5MB.')
-    return
-  }
-
-  // Validar tipo
-  if (!file.type.startsWith('image/')) {
-    alert('Solo se permiten archivos de imagen.')
-    return
-  }
-
-  // Crear URL temporal para vista previa
-  const reader = new FileReader()
-  reader.onload = (e) => {
-    showcaseImagePreview.value = e.target?.result as string
-    showcaseForm.value.image = e.target?.result as string
-  }
-  reader.readAsDataURL(file)
+const addShowcaseImageUrlRow = () => {
+  showcaseForm.value.images.push('')
 }
 
-const removeShowcaseImage = () => {
-  showcaseImagePreview.value = ''
-  showcaseForm.value.image = ''
-  if (showcaseFileInput.value) {
-    showcaseFileInput.value.value = ''
+const removeShowcaseImageUrl = (index: number) => {
+  showcaseForm.value.images.splice(index, 1)
+  if (showcaseForm.value.images.length === 0) {
+    showcaseForm.value.images = ['']
   }
+  updateShowcaseImagePreview()
 }
 
-// Función auxiliar para normalizar strings (quitar tildes, espacios extra, etc.)
-const normalizeString = (str: string): string => {
-  return str
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Quitar tildes y diacríticos
-    .trim()
-    .replace(/\s+/g, ' ') // Normalizar espacios múltiples a uno solo
-}
+const getActualShowcaseImageIndexFromVisibleIndex = (visibleIndex: number) => {
+  let currentVisibleIndex = -1
 
-// Función para verificar si un color está seleccionado (comparación normalizada)
-const isColorSelected = (colorName: string) => {
-  const normalizedColorName = normalizeString(colorName)
-  return productForm.value.colors.some(
-    c => normalizeString(c) === normalizedColorName
-  )
-}
-
-// Función para manejar la selección de colores
-const toggleProductColor = (colorName: string) => {
-  const normalizedColorName = normalizeString(colorName)
-
-  // Buscar el índice comparando strings normalizados
-  const index = productForm.value.colors.findIndex(
-    c => normalizeString(c) === normalizedColorName
-  )
-
-  if (index > -1) {
-    // Si ya está seleccionado, lo removemos
-    productForm.value.colors.splice(index, 1)
-  } else {
-    // Si no está seleccionado, lo agregamos (usando el formato correcto del appleColors)
-    productForm.value.colors.push(colorName)
+  for (let actualIndex = 0; actualIndex < showcaseForm.value.images.length; actualIndex++) {
+    if (!showcaseForm.value.images[actualIndex].trim()) continue
+    currentVisibleIndex += 1
+    if (currentVisibleIndex === visibleIndex) {
+      return actualIndex
+    }
   }
+
+  return -1
+}
+
+const removeShowcaseImageByVisibleIndex = (visibleIndex: number) => {
+  const actualIndex = getActualShowcaseImageIndexFromVisibleIndex(visibleIndex)
+  if (actualIndex === -1) return
+  removeShowcaseImageUrl(actualIndex)
+}
+
+const setPrimaryShowcaseImageByVisibleIndex = (visibleIndex: number) => {
+  const actualIndex = getActualShowcaseImageIndexFromVisibleIndex(visibleIndex)
+  if (actualIndex <= 0) return
+  const imgs = showcaseForm.value.images
+  const [img] = imgs.splice(actualIndex, 1)
+  imgs.unshift(img)
+  updateShowcaseImagePreview()
 }
 
 const saveProduct = () => {
+  const cleanedImages = productForm.value.images.map((image) => image.trim()).filter((image) => image.length > 0)
+  const cleanedMeasure = productForm.value.tireMeasure.trim()
+  const payload = {
+    name: productForm.value.name.trim(),
+    description: productForm.value.description.trim(),
+    price: productForm.value.price,
+    originalPrice: productForm.value.originalPrice,
+    images: cleanedImages,
+    category: productForm.value.category,
+    status: productForm.value.status,
+    colors: cleanedMeasure ? [cleanedMeasure] : []
+  }
+
   if (editingProduct.value) {
     // Actualizar producto existente - mostrar confirmación
     const confirmMessage = `¿Estás seguro de que deseas actualizar el producto "${editingProduct.value.name}"?\n\nSe actualizarán todos los cambios realizados.`
     if (!confirm(confirmMessage)) {
       return
     }
-    updateProduct(editingProduct.value.id, productForm.value)
+    updateProduct(editingProduct.value.id, payload)
   } else {
     // Crear nuevo producto
-    addProduct(productForm.value)
+    addProduct(payload)
   }
   closeProductForm()
 }
@@ -1479,19 +1416,16 @@ const closeProductForm = () => {
   showProductForm.value = false
   editingProduct.value = null
   imagePreview.value = ''
-  productImageUploadMethod.value = 'url'
   productForm.value = {
     name: '',
     description: '',
     price: 0,
     originalPrice: 0,
-    images: [],
+    images: [''],
     category: '',
     status: 'available',
-    colors: []
-  }
-  if (fileInput.value) {
-    fileInput.value.value = ''
+    colors: [],
+    tireMeasure: ''
   }
 }
 
@@ -1508,8 +1442,21 @@ const closeCategoryForm = () => {
 <style scoped>
 .admin-dashboard {
   min-height: 100vh;
+  --brand-primary: #dc2626;
+  --brand-secondary: #991b1b;
+  --brand-accent: #ef4444;
+  --brand-success: #dc2626;
+  --brand-danger: #b91c1c;
+  --brand-primary-contrast: #ffffff;
+  --brand-accent-alt: rgba(255, 255, 255, 0.72);
+  --brand-bg-start: #050505;
+  --brand-bg-end: #111111;
+  --brand-surface: #171717;
+  --brand-border: rgba(220, 38, 38, 0.18);
+  --brand-gradient: linear-gradient(180deg, #050505 0%, #111111 100%);
   background: var(--brand-gradient);
   padding: 20px;
+  padding-top: 4rem;
   color: var(--brand-primary-contrast);
 }
 
@@ -1517,9 +1464,9 @@ const closeCategoryForm = () => {
   text-align: center;
   margin-bottom: 40px;
   padding: 30px;
-  background: var(--brand-surface);
+  background: linear-gradient(180deg, rgba(17, 17, 17, 0.98) 0%, rgba(10, 10, 10, 0.98) 100%);
   border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.18);
   border: 1px solid var(--brand-border);
 }
 
@@ -1539,12 +1486,12 @@ const closeCategoryForm = () => {
 }
 
 .dashboard-title .highlight {
-  color: var(--brand-success);
+  color: var(--brand-primary);
 }
 
 .dashboard-subtitle {
   font-size: 1.1rem;
-  color: var(--brand-accent-alt);
+  color: rgba(255, 255, 255, 0.72);
   margin: 0;
 }
 
@@ -1556,26 +1503,26 @@ const closeCategoryForm = () => {
 }
 
 .stat-card {
-  background: var(--brand-surface);
+  background: linear-gradient(180deg, rgba(26, 26, 26, 0.98) 0%, rgba(15, 15, 15, 0.98) 100%);
   border-radius: 16px;
   padding: 25px;
   display: flex;
   align-items: center;
   gap: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.42);
   border: 1px solid var(--brand-border);
   transition: all 0.3s ease;
 }
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-  border-color: var(--brand-accent);
+  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.18);
+  border-color: rgba(220, 38, 38, 0.32);
 }
 
 .stat-icon {
   font-size: 2.5rem;
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
   border-radius: 50%;
   width: 70px;
   height: 70px;
@@ -1617,7 +1564,7 @@ const closeCategoryForm = () => {
   padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
-  color: var(--brand-accent-alt);
+  color: rgba(255, 255, 255, 0.72);
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
@@ -1626,21 +1573,21 @@ const closeCategoryForm = () => {
 }
 
 .tab.active {
-  background: var(--brand-success);
+  background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
   color: var(--brand-primary-contrast);
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.5);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.45);
 }
 
 .tab:hover:not(.active) {
-  background: var(--brand-border);
+  background: rgba(220, 38, 38, 0.12);
   color: var(--brand-primary-contrast);
 }
 
 .content-section {
-  background: var(--brand-surface);
+  background: linear-gradient(180deg, rgba(23, 23, 23, 0.98) 0%, rgba(17, 17, 17, 0.98) 100%);
   border-radius: 20px;
   padding: 30px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.42);
   border: 1px solid var(--brand-border);
 }
 
@@ -1650,7 +1597,7 @@ const closeCategoryForm = () => {
   align-items: center;
   margin-bottom: 30px;
   padding-bottom: 20px;
-  border-bottom: 2px solid var(--brand-border);
+  border-bottom: 2px solid rgba(220, 38, 38, 0.16);
 }
 
 .section-header h2 {
@@ -1664,6 +1611,8 @@ const closeCategoryForm = () => {
 .search-bar {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 12px;
   margin: 0 0 2rem;
   position: relative;
 }
@@ -1672,6 +1621,22 @@ const closeCategoryForm = () => {
   position: relative;
   width: 100%;
   max-width: 600px;
+  flex: 1 1 auto;
+}
+
+.category-filter-wrapper {
+  min-width: 180px;
+  max-width: 280px;
+}
+
+.category-select {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: 2px solid var(--brand-border);
+  background: var(--brand-bg-end);
+  color: var(--brand-primary-contrast);
+  font-size: 0.95rem;
 }
 
 .search-icon {
@@ -1679,7 +1644,7 @@ const closeCategoryForm = () => {
   left: 14px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--brand-accent-alt);
+  color: rgba(255, 255, 255, 0.6);
   pointer-events: none;
   z-index: 1;
 }
@@ -1699,16 +1664,16 @@ const closeCategoryForm = () => {
 
 .search-input:focus {
   background: var(--brand-surface);
-  border-color: var(--brand-success);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18);
 }
 
 .search-input:hover {
-  border-color: var(--brand-accent);
+  border-color: rgba(220, 38, 38, 0.28);
 }
 
 .search-input::placeholder {
-  color: var(--brand-accent-alt);
+  color: rgba(255, 255, 255, 0.45);
   opacity: 0.7;
 }
 
@@ -1717,12 +1682,12 @@ const closeCategoryForm = () => {
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(16, 185, 129, 0.1);
+  background: rgba(220, 38, 38, 0.12);
   border: none;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--brand-success);
+  color: var(--brand-primary);
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -1733,51 +1698,108 @@ const closeCategoryForm = () => {
 }
 
 .search-clear:hover {
-  background: rgba(16, 185, 129, 0.2);
+  background: rgba(220, 38, 38, 0.2);
   transform: translateY(-50%) scale(1.05);
+}
+
+.tire-size-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tire-size-hint {
+  font-size: 0.85rem;
+  color: #fca5a5;
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.22);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  width: fit-content;
 }
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
 }
 
 .product-card {
-  background: var(--brand-bg-end);
-  border-radius: 16px;
-  padding: 20px;
-  border: 2px solid var(--brand-border);
+  background: linear-gradient(180deg, rgba(17, 17, 17, 0.98) 0%, rgba(12, 12, 12, 0.98) 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   transition: all 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 
 .product-card:hover {
-  border-color: var(--brand-success);
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+  border-color: rgba(220, 38, 38, 0.34);
+  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.18);
   transform: translateY(-2px);
 }
 
 .product-image {
   width: 100%;
-  height: 150px;
-  border-radius: 12px;
+  aspect-ratio: 1 / 0.88;
   overflow: hidden;
-  margin-bottom: 15px;
-  background: var(--brand-border);
+  background: #000000;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .product-image img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  background: #000000;
 }
 
 .no-image {
   font-size: 3rem;
   color: var(--brand-accent-alt);
+}
+
+.status-badge,
+.discount-badge {
+  position: absolute;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 6px 10px;
+  z-index: 1;
+}
+
+.status-badge {
+  left: 12px;
+  bottom: 12px;
+  text-transform: uppercase;
+}
+
+.status-badge.available {
+  background: rgba(34, 197, 94, 0.92);
+  color: #fff;
+}
+
+.status-badge.coming-soon {
+  background: rgba(234, 179, 8, 0.95);
+  color: #fff;
+}
+
+.status-badge.out-of-stock {
+  background: rgba(220, 38, 38, 0.92);
+  color: #fff;
+}
+
+.discount-badge {
+  right: 12px;
+  top: 12px;
+  background: rgba(204, 25, 25, 0.9);
+  color: #fff;
 }
 
 .product-info h3 {
@@ -1787,24 +1809,90 @@ const closeCategoryForm = () => {
   margin: 0 0 8px;
 }
 
-.product-description {
+.product-category {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.product-brand {
   color: var(--brand-accent-alt);
   font-size: 0.9rem;
-  margin: 0 0 15px;
   line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 1.8em;
 }
 
-.product-meta {
-  display: flex;
-  justify-content: space-between;
+.tech-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
   align-items: center;
-  margin-bottom: 15px;
+  padding: 10px 0 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.price {
+.tech-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.tech-label {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.46);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.tech-value {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--brand-primary-contrast);
+}
+
+.tech-rim {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tech-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.price-block-centered {
+  margin-top: auto;
+  align-items: center;
+  text-align: center;
+}
+
+.current-price {
   font-size: 1.3rem;
   font-weight: 700;
   color: var(--brand-success);
+}
+
+.original-price {
+  color: rgba(255, 255, 255, 0.52);
+  text-decoration: line-through;
+  font-size: 0.9rem;
 }
 
 .status {
@@ -1815,23 +1903,40 @@ const closeCategoryForm = () => {
 }
 
 .status.available {
-  background: #d1fae5;
-  color: #065f46;
+  background: rgba(34, 197, 94, 0.14);
+  color: #bbf7d0;
+  border: 1px solid rgba(34, 197, 94, 0.28);
 }
 
 .status.out-of-stock {
-  background: #fee2e2;
-  color: #991b1b;
+  background: rgba(127, 29, 29, 0.26);
+  color: #fff1f2;
+  border: 1px solid rgba(220, 38, 38, 0.18);
 }
 
 .status.coming-soon {
-  background: #dbeafe;
-  color: #1e40af;
+  background: rgba(234, 179, 8, 0.14);
+  color: #fef08a;
+  border: 1px solid rgba(234, 179, 8, 0.28);
 }
 
 .product-actions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
+}
+
+.product-actions .btn {
+  width: 100%;
+  justify-content: center;
+}
+
+.product-info {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  background: #050505;
 }
 
 .categories-list {
@@ -1883,7 +1988,7 @@ const closeCategoryForm = () => {
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: var(--brand-accent-alt);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .empty-icon {
@@ -1952,7 +2057,7 @@ const closeCategoryForm = () => {
 
 .product-color {
   font-size: 0.85rem;
-  color: var(--brand-accent-alt);
+  color: rgba(255, 255, 255, 0.68);
 }
 
 /* === SELECTOR DE COLORES === */
@@ -1981,25 +2086,25 @@ const closeCategoryForm = () => {
 }
 
 .color-option:hover {
-  border-color: rgba(96, 165, 250, 0.5);
-  background: rgba(96, 165, 250, 0.1);
+  border-color: rgba(220, 38, 38, 0.28);
+  background: rgba(220, 38, 38, 0.08);
 }
 
 .color-option.selected {
-  border-color: #60a5fa;
-  background: rgba(96, 165, 250, 0.25);
+  border-color: #dc2626;
+  background: rgba(220, 38, 38, 0.18);
   transform: scale(1.05);
-  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.22);
 }
 
 .color-option.selected .color-circle {
-  border-color: #60a5fa;
+  border-color: #dc2626;
   border-width: 3px;
-  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.28), 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .color-option.selected .color-name {
-  color: #60a5fa;
+  color: #fecaca;
   font-weight: 700;
 }
 
@@ -2046,15 +2151,15 @@ const closeCategoryForm = () => {
 
 .selected-colors {
   padding: 10px 12px;
-  background: rgba(96, 165, 250, 0.1);
-  border: 1px solid rgba(96, 165, 250, 0.3);
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.24);
   border-radius: 8px;
   margin-top: 10px;
 }
 
 .selected-label {
   font-weight: 600;
-  color: #60a5fa;
+  color: #fca5a5;
   font-size: 0.85rem;
 }
 
@@ -2078,34 +2183,35 @@ const closeCategoryForm = () => {
 }
 
 .btn-primary {
-  background: var(--brand-success);
+  background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
   color: var(--brand-primary-contrast);
-  box-shadow: 0 2px 10px rgba(16, 185, 129, 0.5);
+  box-shadow: 0 2px 10px rgba(220, 38, 38, 0.34);
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.6);
-  background: #059669;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.42);
+  background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
 }
 
 .btn-secondary {
-  background: var(--brand-border);
+  background: rgba(255, 255, 255, 0.08);
   color: var(--brand-primary-contrast);
+  border: 1px solid rgba(220, 38, 38, 0.14);
 }
 
 .btn-secondary:hover {
-  background: var(--brand-surface);
+  background: rgba(220, 38, 38, 0.1);
 }
 
 .btn-danger {
-  background: rgba(239, 68, 68, 0.2);
-  color: var(--brand-danger);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(220, 38, 38, 0.14);
+  color: #fecaca;
+  border: 1px solid rgba(220, 38, 38, 0.26);
 }
 
 .btn-danger:hover {
-  background: rgba(239, 68, 68, 0.3);
+  background: rgba(220, 38, 38, 0.22);
 }
 
 .btn-sm {
@@ -2210,8 +2316,8 @@ const closeCategoryForm = () => {
 
 .form-input:focus {
   outline: none;
-  border-color: var(--brand-success);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18);
 }
 
 .form-input::placeholder {
@@ -2261,7 +2367,7 @@ const closeCategoryForm = () => {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: rgba(239, 68, 68, 0.9);
+  background: rgba(220, 38, 38, 0.9);
   color: white;
   border: none;
   border-radius: 50%;
@@ -2276,7 +2382,7 @@ const closeCategoryForm = () => {
 }
 
 .remove-image:hover {
-  background: rgba(239, 68, 68, 1);
+  background: rgba(127, 29, 29, 1);
 }
 
 /* Estilos para vista previa de múltiples imágenes */
@@ -2299,6 +2405,45 @@ const closeCategoryForm = () => {
   background: var(--brand-bg-end);
 }
 
+.url-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.url-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.remove-url {
+  background: rgba(220,38,38,0.12);
+  border: none;
+  color: var(--brand-primary);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.add-url-row {
+  margin-bottom: 12px;
+}
+
+.principal-badge {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
 .image-preview-item img {
   width: 100%;
   height: 100%;
@@ -2309,7 +2454,7 @@ const closeCategoryForm = () => {
   position: absolute;
   top: 5px;
   right: 5px;
-  background: rgba(239, 68, 68, 0.9);
+  background: rgba(220, 38, 38, 0.9);
   color: white;
   border: none;
   border-radius: 50%;
@@ -2324,7 +2469,7 @@ const closeCategoryForm = () => {
 }
 
 .remove-single-image:hover {
-  background: rgba(239, 68, 68, 1);
+  background: rgba(127, 29, 29, 1);
 }
 
 .image-index {
@@ -2379,7 +2524,7 @@ const closeCategoryForm = () => {
 }
 
 .img-action-btn.primary:hover {
-  background: #059669;
+  background: #7f1d1d;
 }
 
 .drop-zone {
@@ -2393,13 +2538,13 @@ const closeCategoryForm = () => {
 }
 
 .drop-zone.dragover {
-  border-color: var(--brand-success);
-  background: rgba(16, 185, 129, 0.1);
+  border-color: var(--brand-primary);
+  background: rgba(220, 38, 38, 0.08);
 }
 
 .drop-zone:hover {
-  border-color: var(--brand-success);
-  background: rgba(16, 185, 129, 0.1);
+  border-color: var(--brand-primary);
+  background: rgba(220, 38, 38, 0.08);
 }
 
 .drop-content {
@@ -2417,14 +2562,14 @@ const closeCategoryForm = () => {
 .upload-btn {
   background: none;
   border: none;
-  color: var(--brand-success);
+  color: var(--brand-primary);
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
 }
 
 .upload-btn:hover {
-  color: #059669;
+  color: #fecaca;
 }
 
 .url-input {
@@ -2440,15 +2585,15 @@ const closeCategoryForm = () => {
 }
 
 .discount-info {
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.26);
   border-radius: 8px;
   padding: 12px;
   margin-bottom: 20px;
 }
 
 .discount-badge {
-  color: var(--brand-success);
+  color: white;
   font-weight: 600;
   font-size: 0.9rem;
 }
@@ -2541,11 +2686,11 @@ const closeCategoryForm = () => {
   }
 
   .product-card {
-    padding: 15px;
+    border-radius: 18px;
   }
 
   .product-actions {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: 8px;
   }
 
@@ -2676,21 +2821,21 @@ const closeCategoryForm = () => {
 }
 
 .status-badge.completed {
-  background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  background: rgba(220, 38, 38, 0.18);
+  color: #fecaca;
+  border: 1px solid rgba(220, 38, 38, 0.26);
 }
 
 .status-badge.pending {
-  background: rgba(251, 191, 36, 0.2);
-  color: #f59e0b;
-  border: 1px solid rgba(251, 191, 36, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fca5a5;
+  border: 1px solid rgba(220, 38, 38, 0.18);
 }
 
 .status-badge.cancelled {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(127, 29, 29, 0.28);
+  color: #fff1f2;
+  border: 1px solid rgba(220, 38, 38, 0.22);
 }
 
 .date {
@@ -2740,7 +2885,7 @@ const closeCategoryForm = () => {
 }
 
 .products-badge {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #111111 100%);
   color: white;
   padding: 4px 10px;
   border-radius: 12px;
@@ -2798,7 +2943,7 @@ const closeCategoryForm = () => {
 }
 
 .item-quantity {
-  background: var(--brand-accent);
+  background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
   color: white;
   padding: 2px 8px;
   border-radius: 10px;
@@ -2841,7 +2986,7 @@ const closeCategoryForm = () => {
 }
 
 .quantity-badge {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, #dc2626 0%, #111111 100%);
   color: white;
   padding: 6px 12px;
   border-radius: 12px;
@@ -2959,8 +3104,8 @@ const closeCategoryForm = () => {
 }
 
 .showcase-card:hover {
-  border-color: var(--brand-accent);
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+  border-color: rgba(220, 38, 38, 0.34);
+  box-shadow: 0 8px 25px rgba(220, 38, 38, 0.18);
   transform: translateY(-2px);
 }
 
@@ -3006,7 +3151,7 @@ const closeCategoryForm = () => {
 }
 
 .showcase-category {
-  background: var(--brand-accent);
+  background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
   color: white;
   padding: 4px 12px;
   border-radius: 20px;
@@ -3022,15 +3167,15 @@ const closeCategoryForm = () => {
 }
 
 .showcase-status.available {
-  background: rgba(34, 197, 94, 0.2);
-  color: #22c55e;
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  background: rgba(220, 38, 38, 0.16);
+  color: #fecaca;
+  border: 1px solid rgba(220, 38, 38, 0.24);
 }
 
 .showcase-status.unavailable {
-  background: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(127, 29, 29, 0.24);
+  color: #fff1f2;
+  border: 1px solid rgba(220, 38, 38, 0.22);
 }
 
 .showcase-actions {
@@ -3060,14 +3205,14 @@ const closeCategoryForm = () => {
   margin-bottom: 1rem;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #333;
+  border: 1px solid rgba(220, 38, 38, 0.18);
 }
 
 .tab-btn {
   flex: 1;
   padding: 0.75rem 1rem;
-  background: #2a2a2a;
-  color: rgba(255, 255, 255, 0.7);
+  background: #151515;
+  color: rgba(255, 255, 255, 0.78);
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -3075,12 +3220,12 @@ const closeCategoryForm = () => {
 }
 
 .tab-btn.active {
-  background: var(--brand-success);
+  background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
   color: white;
 }
 
 .tab-btn:hover:not(.active) {
-  background: #333;
+  background: rgba(220, 38, 38, 0.1);
   color: rgba(255, 255, 255, 0.9);
 }
 
@@ -3093,18 +3238,18 @@ const closeCategoryForm = () => {
 }
 
 .file-upload-area {
-  border: 2px dashed #333;
+  border: 2px dashed rgba(220, 38, 38, 0.22);
   border-radius: 12px;
   padding: 2rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: #1a1a1a;
+  background: #111111;
 }
 
 .file-upload-area:hover {
-  border-color: var(--brand-success);
-  background: rgba(16, 185, 129, 0.05);
+  border-color: rgba(220, 38, 38, 0.34);
+  background: rgba(220, 38, 38, 0.06);
 }
 
 .upload-placeholder {
@@ -3112,7 +3257,7 @@ const closeCategoryForm = () => {
 }
 
 .upload-placeholder svg {
-  color: #555;
+  color: #999;
   margin-bottom: 1rem;
 }
 
@@ -3143,7 +3288,7 @@ const closeCategoryForm = () => {
   position: absolute;
   top: -8px;
   right: -8px;
-  background: #ef4444;
+  background: #dc2626;
   color: white;
   border: none;
   border-radius: 50%;
@@ -3155,7 +3300,7 @@ const closeCategoryForm = () => {
 }
 
 .remove-image:hover {
-  background: #dc2626;
+  background: #7f1d1d;
   transform: scale(1.1);
 }
 
@@ -3230,7 +3375,7 @@ const closeCategoryForm = () => {
   }
 
   .product-card {
-    padding: 12px;
+    border-radius: 16px;
   }
 
   .product-info h3 {
@@ -3243,7 +3388,7 @@ const closeCategoryForm = () => {
   }
 
   .price {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   .btn {
