@@ -9,6 +9,8 @@ export type Product = {
   category: string // categoryId como string para consistencia interna
   status: 'available' | 'out-of-stock' | 'coming-soon'
   colors?: string[]
+  tireMeasure?: string
+  tireRim?: string
   isShowcase?: boolean // Nueva propiedad del modelo Prisma
   showcaseImage?: string // Nueva propiedad del modelo Prisma
   createdAt: Date
@@ -25,6 +27,8 @@ export interface CreateProductRequest {
   categoryId: number // Backend espera number
   status?: 'available' | 'out-of-stock' | 'coming-soon'
   colors?: string[]
+  tireMeasure?: string
+  tireRim?: string
   isShowcase?: boolean
   showcaseImage?: string
 }
@@ -39,6 +43,8 @@ export interface UpdateProductRequest {
   categoryId?: number
   status?: 'available' | 'out-of-stock' | 'coming-soon'
   colors?: string[]
+  tireMeasure?: string
+  tireRim?: string
   isShowcase?: boolean
   showcaseImage?: string
 }
@@ -54,6 +60,8 @@ export interface CreateProductResponse {
   categoryId: number
   status: string
   colors?: string // JSON string del backend
+  tireMeasure?: string
+  tireRim?: string
   isShowcase: boolean
   showcaseImage?: string
   createdAt: string // ISO 8601
